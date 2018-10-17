@@ -1,0 +1,24 @@
+/opt/clion-2018.2.4/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/zack/total/CLionProjects/arm_robot_locate
+CMake Deprecation Warning at CMakeLists.txt:6 (cmake_policy):
+  The OLD behavior for policy CMP0003 will be removed from a future version
+  of CMake.
+
+  The cmake-policies(7) manual explains that the OLD behaviors of all
+  policies are deprecated and that a policy should be set to OLD only under
+  specific short-term circumstances.  Projects should be ported to the NEW
+  behavior and not rely on setting a policy to OLD.
+
+
+CMake Deprecation Warning at CMakeLists.txt:7 (cmake_policy):
+  The OLD behavior for policy CMP0015 will be removed from a future version
+  of CMake.
+
+  The cmake-policies(7) manual explains that the OLD behaviors of all
+  policies are deprecated and that a policy should be set to OLD only under
+  specific short-term circumstances.  Projects should be ported to the NEW
+  behavior and not rely on setting a policy to OLD.
+
+
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug
