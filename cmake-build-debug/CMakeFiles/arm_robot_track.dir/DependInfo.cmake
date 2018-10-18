@@ -4,12 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/zack/total/CLionProjects/arm_robot_locate/src/DataProcess.cpp" "/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles/arm_robot_track.dir/src/DataProcess.o"
-  "/home/zack/total/CLionProjects/arm_robot_locate/src/SaveDepth.cpp" "/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles/arm_robot_track.dir/src/SaveDepth.o"
-  "/home/zack/total/CLionProjects/arm_robot_locate/src/TemplateMatch.cpp" "/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles/arm_robot_track.dir/src/TemplateMatch.o"
-  "/home/zack/total/CLionProjects/arm_robot_locate/src/example.cpp" "/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles/arm_robot_track.dir/src/example.o"
-  "/home/zack/total/CLionProjects/arm_robot_locate/src/main.cpp" "/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles/arm_robot_track.dir/src/main.o"
-  "/home/zack/total/CLionProjects/arm_robot_locate/src/operation.cpp" "/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles/arm_robot_track.dir/src/operation.o"
+  "/home/zack/total/CLionProjects/arm_robot_track/src/DataProcess.cpp" "/home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug/CMakeFiles/arm_robot_track.dir/src/DataProcess.o"
+  "/home/zack/total/CLionProjects/arm_robot_track/src/main.cpp" "/home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug/CMakeFiles/arm_robot_track.dir/src/main.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

@@ -1,4 +1,4 @@
-# Install script for directory: /home/zack/total/CLionProjects/arm_robot_locate
+# Install script for directory: /home/zack/total/CLionProjects/arm_robot_track
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

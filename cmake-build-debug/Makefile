@@ -48,10 +48,10 @@ RM = /opt/clion-2018.2.4/bin/cmake/linux/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/zack/total/CLionProjects/arm_robot_locate
+CMAKE_SOURCE_DIR = /home/zack/total/CLionProjects/arm_robot_track
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug
+CMAKE_BINARY_DIR = /home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles /home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug/CMakeFiles /home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -139,51 +139,6 @@ src/DataProcess.s:
 .PHONY : src/DataProcess.s
 
 # target to build an object file
-src/SaveDepth.o:
-	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/SaveDepth.o
-.PHONY : src/SaveDepth.o
-
-# target to preprocess a source file
-src/SaveDepth.i:
-	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/SaveDepth.i
-.PHONY : src/SaveDepth.i
-
-# target to generate assembly for a file
-src/SaveDepth.s:
-	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/SaveDepth.s
-.PHONY : src/SaveDepth.s
-
-# target to build an object file
-src/TemplateMatch.o:
-	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/TemplateMatch.o
-.PHONY : src/TemplateMatch.o
-
-# target to preprocess a source file
-src/TemplateMatch.i:
-	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/TemplateMatch.i
-.PHONY : src/TemplateMatch.i
-
-# target to generate assembly for a file
-src/TemplateMatch.s:
-	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/TemplateMatch.s
-.PHONY : src/TemplateMatch.s
-
-# target to build an object file
-src/example.o:
-	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/example.o
-.PHONY : src/example.o
-
-# target to preprocess a source file
-src/example.i:
-	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/example.i
-.PHONY : src/example.i
-
-# target to generate assembly for a file
-src/example.s:
-	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/example.s
-.PHONY : src/example.s
-
-# target to build an object file
 src/main.o:
 	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/main.o
 .PHONY : src/main.o
@@ -198,21 +153,6 @@ src/main.s:
 	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/main.s
 .PHONY : src/main.s
 
-# target to build an object file
-src/operation.o:
-	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/operation.o
-.PHONY : src/operation.o
-
-# target to preprocess a source file
-src/operation.i:
-	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/operation.i
-.PHONY : src/operation.i
-
-# target to generate assembly for a file
-src/operation.s:
-	$(MAKE) -f CMakeFiles/arm_robot_track.dir/build.make CMakeFiles/arm_robot_track.dir/src/operation.s
-.PHONY : src/operation.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -225,21 +165,9 @@ help:
 	@echo "... src/DataProcess.o"
 	@echo "... src/DataProcess.i"
 	@echo "... src/DataProcess.s"
-	@echo "... src/SaveDepth.o"
-	@echo "... src/SaveDepth.i"
-	@echo "... src/SaveDepth.s"
-	@echo "... src/TemplateMatch.o"
-	@echo "... src/TemplateMatch.i"
-	@echo "... src/TemplateMatch.s"
-	@echo "... src/example.o"
-	@echo "... src/example.i"
-	@echo "... src/example.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... src/operation.o"
-	@echo "... src/operation.i"
-	@echo "... src/operation.s"
 .PHONY : help
 
 

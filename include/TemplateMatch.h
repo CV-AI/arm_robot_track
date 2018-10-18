@@ -40,7 +40,7 @@ public:
 	static int index_template ;
 	static int CorlorsChosen[3];
 	static void Mouse_getColor(int event, int x, int y, int, void*);
-	void get_cordinate(int picture);// use color to get the first Template
+	void get_coordinate(int picture);// use color to get the first Template
 	
 
 };
