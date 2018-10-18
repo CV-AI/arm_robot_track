@@ -6,5 +6,5 @@ CXX_FLAGS = -g   -Wno-format-extra-args -std=c++11 -g -O3
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/usr/local/cuda/include -I/usr/local/zed/include -I/home/zack/total/CLionProjects/arm_robot_locate/include -isystem /usr/local/include/opencv4 
+CXX_INCLUDES = -I/usr/local/cuda/include -I/usr/local/zed/include -I/home/zack/total/CLionProjects/arm_robot_track/include -isystem /usr/local/include/opencv4 
 

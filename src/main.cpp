@@ -2,7 +2,6 @@
 #include <sl_zed/Camera.hpp>
 #define size_detection_window 30
 // Sample includes
-#include <SaveDepth.hpp>
 #include <cmath>
 #include <iostream>
 #include "DataProcess.h"
@@ -14,35 +13,30 @@
 using namespace sl;
 
 cv::Mat slMat2cvMat(Mat& input);
-cv::Size boardSize(6,6);
-void writeMatToFile(cv::Matx44f& m, const char* filename)
+
+void writeMatToFile(cv::Mat& m, const char* filename)
 {
-	std::ofstream fout(filename);
-	if (!fout)
-	{
-		std::cout << "File Not Opened" << std::endl;
-		return;
-	}
-	for (int i = 0; i<m.rows; i++)
-	{
-		for (int j = 0; j<m.cols; j++)
-		{
-			fout << m(i, j) << "\t";
-		}
-		fout << std::endl;
-	}
-	fout.close();
+	// Declare what you need
+	cv::FileStorage file(filename, cv::FileStorage::WRITE);
+	// Write to file!
+	file << "m" << m;
+	for(int i =0;i<m.rows;i++)
+    {
+	    for(int j=0;j<m.cols; j++)
+        {
+	        std::cout<<m.at<float>(i, j)<<" ";
+        }
+        std::cout<<std::endl;
+    }
 }
 
 int main() 
 {
 
 	Camera zed;
-	 
+	cv::Size boardSize(3,3);
 	DataProcess dataProcess;
-	std::ofstream outfile;
 
-	outfile.open("./data.txt");
 	cv::namedWindow("LEFT");
 	cv::namedWindow("RIGHT");
 
@@ -67,8 +61,7 @@ int main()
 	Mat image_zed_left(new_width, new_height, MAT_TYPE_8U_C3);
 	Mat image_zed_right(new_width, new_height, MAT_TYPE_8U_C3);
 	std::cout << image_zed_right.getDataType() << std::endl;
-    std::vector<cv::Point2f> imagecorners_r;
-    std::vector<cv::Point2f> imagecorners_l;
+
 	bool whether_continue = 1;
 	while (whether_continue)
 	{
@@ -80,47 +73,50 @@ int main()
 
 			dataProcess.image_r = slMat2cvMat(image_zed_right);
 			dataProcess.image_l = slMat2cvMat(image_zed_left);
-			// ɾȥ���һ������Ҫ��ͨ��
+
 			cv::cvtColor(dataProcess.image_l, dataProcess.image_l, cv::COLOR_BGRA2BGR);
 			cv::cvtColor(dataProcess.image_r, dataProcess.image_r, cv::COLOR_BGRA2BGR);
 			dataProcess.image_r.convertTo(dataProcess.image_r, CV_8U);
 			dataProcess.image_l.convertTo(dataProcess.image_l, CV_8U);
 			assert(dataProcess.image_r.channels() == 3&& dataProcess.image_l.channels()==3);
-			//dataProcess.image = dataProcess.image;
+			//find corner coordinates in both left and right view
 			for(int num_picture=0; num_picture<2;num_picture++)
             {
 			    if(num_picture==0)
                 {
-			        if(dataProcess.find_camera_cordinates(dataProcess.image_l, boardSize)) {
-                        printf("Find left view corners success!\n");
-                        imagecorners_l = dataProcess.imagecorners;
+			        if(dataProcess.find_camera_coordinates(dataProcess.image_l, boardSize)) {
+                        printf("Found left view corners successfully!\n");
+                        dataProcess.corners_l = dataProcess.imagecorners;
                     }
                 }
                 if(num_picture==1)
                 {
-                    if(dataProcess.find_camera_cordinates(dataProcess.image_r, boardSize)) {
-                        printf("Find right view corners success!\n");
-                        imagecorners_r = dataProcess.imagecorners;
+                    if(dataProcess.find_camera_coordinates(dataProcess.image_r, boardSize)) {
+                        printf("Found right view corners successfully!\n");
+                        dataProcess.corners_r = dataProcess.imagecorners;
                         whether_continue = false;
                     }
                 }
             }
-			dataProcess.mapTo3D();
+            cv::imshow("LEFT", dataProcess.image_l);
+			cv::imshow("RIGHT", dataProcess.image_r);
+			cv::waitKey(1);
 
 		}
 	}
-	cv::Mat word_cordinate = cv::Mat::zeros(4, 4, CV_32F);
-	std::fstream file;
-	file.open("F://track/src/data.txt"); 
-	for (int i = 0; i < 67; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			file >> word_cordinate.at<float>(i, j);
-		}
-	}
-	cv::Matx44f solution = dataProcess.calculate(dataProcess.A, word_cordinate);
-	writeMatToFile(solution, "./solution.txt");
+    cv::imshow("LEFT", dataProcess.image_l);
+    cv::imshow("RIGHT", dataProcess.image_r);
+    cv::waitKey(0);
+	// get chessboard corners, and mat them to 3D coordinate
+	dataProcess.mapChessBoardTo3D();
+	// prepare the word_coordinate_matrix and camera-coordinate-matrix
+	dataProcess.prepareMatrices();
+	// use prepared matrices to calculate transfer matrix
+	dataProcess.calculate_T_the_whole(dataProcess.camera_Matrix, dataProcess.world_Matrix);
+	// write the calculate matrix to file
+	writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext");
+//	writeMatToFile(dataProcess.world_Matrix, "world_matrix.ext");
+//	writeMatToFile(dataProcess.camera_Matrix, "camera_Matrix.ext");
 	zed.close();
 	return 0;
 }

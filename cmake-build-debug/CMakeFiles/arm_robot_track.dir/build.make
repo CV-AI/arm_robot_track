@@ -43,10 +43,10 @@ RM = /opt/clion-2018.2.4/bin/cmake/linux/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/zack/total/CLionProjects/arm_robot_locate
+CMAKE_SOURCE_DIR = /home/zack/total/CLionProjects/arm_robot_track
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug
+CMAKE_BINARY_DIR = /home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/arm_robot_track.dir/depend.make
@@ -59,100 +59,40 @@ include CMakeFiles/arm_robot_track.dir/flags.make
 
 CMakeFiles/arm_robot_track.dir/src/DataProcess.o: CMakeFiles/arm_robot_track.dir/flags.make
 CMakeFiles/arm_robot_track.dir/src/DataProcess.o: ../src/DataProcess.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/arm_robot_track.dir/src/DataProcess.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/arm_robot_track.dir/src/DataProcess.o -c /home/zack/total/CLionProjects/arm_robot_locate/src/DataProcess.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/arm_robot_track.dir/src/DataProcess.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/arm_robot_track.dir/src/DataProcess.o -c /home/zack/total/CLionProjects/arm_robot_track/src/DataProcess.cpp
 
 CMakeFiles/arm_robot_track.dir/src/DataProcess.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/arm_robot_track.dir/src/DataProcess.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zack/total/CLionProjects/arm_robot_locate/src/DataProcess.cpp > CMakeFiles/arm_robot_track.dir/src/DataProcess.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zack/total/CLionProjects/arm_robot_track/src/DataProcess.cpp > CMakeFiles/arm_robot_track.dir/src/DataProcess.i
 
 CMakeFiles/arm_robot_track.dir/src/DataProcess.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/arm_robot_track.dir/src/DataProcess.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zack/total/CLionProjects/arm_robot_locate/src/DataProcess.cpp -o CMakeFiles/arm_robot_track.dir/src/DataProcess.s
-
-CMakeFiles/arm_robot_track.dir/src/SaveDepth.o: CMakeFiles/arm_robot_track.dir/flags.make
-CMakeFiles/arm_robot_track.dir/src/SaveDepth.o: ../src/SaveDepth.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/arm_robot_track.dir/src/SaveDepth.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/arm_robot_track.dir/src/SaveDepth.o -c /home/zack/total/CLionProjects/arm_robot_locate/src/SaveDepth.cpp
-
-CMakeFiles/arm_robot_track.dir/src/SaveDepth.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/arm_robot_track.dir/src/SaveDepth.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zack/total/CLionProjects/arm_robot_locate/src/SaveDepth.cpp > CMakeFiles/arm_robot_track.dir/src/SaveDepth.i
-
-CMakeFiles/arm_robot_track.dir/src/SaveDepth.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/arm_robot_track.dir/src/SaveDepth.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zack/total/CLionProjects/arm_robot_locate/src/SaveDepth.cpp -o CMakeFiles/arm_robot_track.dir/src/SaveDepth.s
-
-CMakeFiles/arm_robot_track.dir/src/TemplateMatch.o: CMakeFiles/arm_robot_track.dir/flags.make
-CMakeFiles/arm_robot_track.dir/src/TemplateMatch.o: ../src/TemplateMatch.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/arm_robot_track.dir/src/TemplateMatch.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/arm_robot_track.dir/src/TemplateMatch.o -c /home/zack/total/CLionProjects/arm_robot_locate/src/TemplateMatch.cpp
-
-CMakeFiles/arm_robot_track.dir/src/TemplateMatch.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/arm_robot_track.dir/src/TemplateMatch.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zack/total/CLionProjects/arm_robot_locate/src/TemplateMatch.cpp > CMakeFiles/arm_robot_track.dir/src/TemplateMatch.i
-
-CMakeFiles/arm_robot_track.dir/src/TemplateMatch.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/arm_robot_track.dir/src/TemplateMatch.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zack/total/CLionProjects/arm_robot_locate/src/TemplateMatch.cpp -o CMakeFiles/arm_robot_track.dir/src/TemplateMatch.s
-
-CMakeFiles/arm_robot_track.dir/src/example.o: CMakeFiles/arm_robot_track.dir/flags.make
-CMakeFiles/arm_robot_track.dir/src/example.o: ../src/example.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/arm_robot_track.dir/src/example.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/arm_robot_track.dir/src/example.o -c /home/zack/total/CLionProjects/arm_robot_locate/src/example.cpp
-
-CMakeFiles/arm_robot_track.dir/src/example.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/arm_robot_track.dir/src/example.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zack/total/CLionProjects/arm_robot_locate/src/example.cpp > CMakeFiles/arm_robot_track.dir/src/example.i
-
-CMakeFiles/arm_robot_track.dir/src/example.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/arm_robot_track.dir/src/example.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zack/total/CLionProjects/arm_robot_locate/src/example.cpp -o CMakeFiles/arm_robot_track.dir/src/example.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zack/total/CLionProjects/arm_robot_track/src/DataProcess.cpp -o CMakeFiles/arm_robot_track.dir/src/DataProcess.s
 
 CMakeFiles/arm_robot_track.dir/src/main.o: CMakeFiles/arm_robot_track.dir/flags.make
 CMakeFiles/arm_robot_track.dir/src/main.o: ../src/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/arm_robot_track.dir/src/main.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/arm_robot_track.dir/src/main.o -c /home/zack/total/CLionProjects/arm_robot_locate/src/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/arm_robot_track.dir/src/main.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/arm_robot_track.dir/src/main.o -c /home/zack/total/CLionProjects/arm_robot_track/src/main.cpp
 
 CMakeFiles/arm_robot_track.dir/src/main.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/arm_robot_track.dir/src/main.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zack/total/CLionProjects/arm_robot_locate/src/main.cpp > CMakeFiles/arm_robot_track.dir/src/main.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zack/total/CLionProjects/arm_robot_track/src/main.cpp > CMakeFiles/arm_robot_track.dir/src/main.i
 
 CMakeFiles/arm_robot_track.dir/src/main.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/arm_robot_track.dir/src/main.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zack/total/CLionProjects/arm_robot_locate/src/main.cpp -o CMakeFiles/arm_robot_track.dir/src/main.s
-
-CMakeFiles/arm_robot_track.dir/src/operation.o: CMakeFiles/arm_robot_track.dir/flags.make
-CMakeFiles/arm_robot_track.dir/src/operation.o: ../src/operation.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/arm_robot_track.dir/src/operation.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/arm_robot_track.dir/src/operation.o -c /home/zack/total/CLionProjects/arm_robot_locate/src/operation.cpp
-
-CMakeFiles/arm_robot_track.dir/src/operation.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/arm_robot_track.dir/src/operation.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zack/total/CLionProjects/arm_robot_locate/src/operation.cpp > CMakeFiles/arm_robot_track.dir/src/operation.i
-
-CMakeFiles/arm_robot_track.dir/src/operation.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/arm_robot_track.dir/src/operation.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zack/total/CLionProjects/arm_robot_locate/src/operation.cpp -o CMakeFiles/arm_robot_track.dir/src/operation.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zack/total/CLionProjects/arm_robot_track/src/main.cpp -o CMakeFiles/arm_robot_track.dir/src/main.s
 
 # Object files for target arm_robot_track
 arm_robot_track_OBJECTS = \
 "CMakeFiles/arm_robot_track.dir/src/DataProcess.o" \
-"CMakeFiles/arm_robot_track.dir/src/SaveDepth.o" \
-"CMakeFiles/arm_robot_track.dir/src/TemplateMatch.o" \
-"CMakeFiles/arm_robot_track.dir/src/example.o" \
-"CMakeFiles/arm_robot_track.dir/src/main.o" \
-"CMakeFiles/arm_robot_track.dir/src/operation.o"
+"CMakeFiles/arm_robot_track.dir/src/main.o"
 
 # External object files for target arm_robot_track
 arm_robot_track_EXTERNAL_OBJECTS =
 
 arm_robot_track: CMakeFiles/arm_robot_track.dir/src/DataProcess.o
-arm_robot_track: CMakeFiles/arm_robot_track.dir/src/SaveDepth.o
-arm_robot_track: CMakeFiles/arm_robot_track.dir/src/TemplateMatch.o
-arm_robot_track: CMakeFiles/arm_robot_track.dir/src/example.o
 arm_robot_track: CMakeFiles/arm_robot_track.dir/src/main.o
-arm_robot_track: CMakeFiles/arm_robot_track.dir/src/operation.o
 arm_robot_track: CMakeFiles/arm_robot_track.dir/build.make
 arm_robot_track: /usr/local/zed/lib/libsl_input.so
 arm_robot_track: /usr/local/zed/lib/libsl_core.so
@@ -230,7 +170,7 @@ arm_robot_track: /usr/local/lib/libopencv_imgproc.so.4.0.0
 arm_robot_track: /usr/local/lib/libopencv_core.so.4.0.0
 arm_robot_track: /usr/local/lib/libopencv_cudev.so.4.0.0
 arm_robot_track: CMakeFiles/arm_robot_track.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable arm_robot_track"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable arm_robot_track"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/arm_robot_track.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -243,6 +183,6 @@ CMakeFiles/arm_robot_track.dir/clean:
 .PHONY : CMakeFiles/arm_robot_track.dir/clean
 
 CMakeFiles/arm_robot_track.dir/depend:
-	cd /home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/zack/total/CLionProjects/arm_robot_locate /home/zack/total/CLionProjects/arm_robot_locate /home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug /home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug /home/zack/total/CLionProjects/arm_robot_locate/cmake-build-debug/CMakeFiles/arm_robot_track.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/zack/total/CLionProjects/arm_robot_track /home/zack/total/CLionProjects/arm_robot_track /home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug /home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug /home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug/CMakeFiles/arm_robot_track.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/arm_robot_track.dir/depend
 
