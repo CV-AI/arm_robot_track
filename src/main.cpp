@@ -1,27 +1,17 @@
 // ZED includes
 #include <sl_zed/Camera.hpp>
-#define size_detection_window 30
-// Sample includes
 #include <cmath>
 #include <iostream>
 #include "DataProcess.h"
 #include "TemplateMatch.h"
 #include <vector>
 #include <string>
-#include <string.h>
-//#include "utils.hpp"
+
 using namespace sl;
 
 cv::Mat slMat2cvMat(Mat& input);
 
-void writeMatToFile(cv::Mat& m, const char* filename)
-{
-	// Declare what you need
-	cv::FileStorage file(filename, cv::FileStorage::WRITE);
-	// Write to file!
-	file << "m" << m;
-	std::cout<<m<<std::endl;
-}
+
 
 int main() 
 {
@@ -33,6 +23,7 @@ int main()
 	cv::namedWindow("LEFT");
 	cv::namedWindow("RIGHT");
 
+	bool test = false;
 	InitParameters init_params;
 	init_params.camera_resolution = RESOLUTION_HD720;
 	init_params.camera_fps = 60;//֡��
@@ -55,7 +46,8 @@ int main()
 	Mat image_zed_right(new_width, new_height, MAT_TYPE_8U_C3);
 	std::cout << image_zed_right.getDataType() << std::endl;
 
-	bool whether_continue = 1;
+	bool whether_continue = true;
+    bool found_chessboard_left = false;
 	while (whether_continue)
 	{
 		cv::Mat image1;cv::Mat image2;
@@ -73,6 +65,7 @@ int main()
 			dataProcess.image_l.convertTo(dataProcess.image_l, CV_8U);
 			assert(dataProcess.image_r.channels() == 3&& dataProcess.image_l.channels()==3);
 			//find corner coordinates in both left and right view
+
 			for(int num_picture=0; num_picture<2;num_picture++)
             {
 			    if(num_picture==0)
@@ -80,9 +73,11 @@ int main()
 			        if(dataProcess.find_camera_coordinates(dataProcess.image_l, boardSize)) {
                         printf("Found left view corners successfully!\n");
                         dataProcess.corners_l = dataProcess.imagecorners;
+                        found_chessboard_left = true;
                     }
                 }
-                if(num_picture==1)
+                // ensure the left and right chessboard were found at the same time;
+                if(num_picture==1 && found_chessboard_left)
                 {
                     if(dataProcess.find_camera_coordinates(dataProcess.image_r, boardSize)) {
                         printf("Found right view corners successfully!\n");
@@ -91,23 +86,34 @@ int main()
                     }
                 }
             }
+
+            found_chessboard_left = false;
             cv::imshow("LEFT", dataProcess.image_l);
 			cv::imshow("RIGHT", dataProcess.image_r);
 			cv::waitKey(1);
-
 		}
 	}
     cv::imshow("LEFT", dataProcess.image_l);
     cv::imshow("RIGHT", dataProcess.image_r);
     cv::waitKey(0);
-	// get chessboard corners, and mat them to 3D coordinate
-	dataProcess.mapChessBoardTo3D();
-	// prepare the word_coordinate_matrix and camera-coordinate-matrix
-	dataProcess.prepareMatrices();
-	// use prepared matrices to calculate transfer matrix
-	dataProcess.calculate_T_the_whole();
-	// write the calculate matrix to file
-	writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext");
+    // get chessboard corners, and mat them to 3D coordinate
+    dataProcess.mapChessBoardTo3D();
+    // prepare the world_matrix and camera-matrix
+    // there is no point to prepare world_matrix, but for the sake of simplicity, let's do it
+    dataProcess.prepareMatrices();
+    if(!test)
+    {
+
+        // use prepared matrices to calculate transfer matrix
+        dataProcess.calculate_T_the_whole();
+        // write the calculate matrix to file
+        writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext");
+    }
+    else
+    {
+        dataProcess.test_transfer_matrix();
+    }
+
 	zed.close();
 	return 0;
 }
