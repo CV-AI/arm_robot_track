@@ -1,3 +1,0 @@
-/home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/zack/total/CLionProjects/arm_robot_track/cmake-build-debug/CMakeFiles/arm_robot_track.dir

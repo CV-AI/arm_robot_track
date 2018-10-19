@@ -80,7 +80,7 @@ bool DataProcess::find_camera_coordinates(cv::Mat &chessboard, cv::Size boardSiz
 }
 
 bool DataProcess::prepareMatrices() {
-    printf("Preparing matrices!");
+    printf("Preparing matrices!\n");
     // left hand coordinate system, with x-axi points to bottom of the chessboard, origin-point at left-upper corner
     float word_coordinate_data[num_corners * 4] = {0,  0,  0,   l, l,  l,  l*2,  l*2, l*2,
                                                   0,  l,  l*2, 0, l,  l*2,  0,  l,   l*2,
@@ -89,23 +89,18 @@ bool DataProcess::prepareMatrices() {
     world_Matrix = cv::Mat(4, num_corners, CV_32F, word_coordinate_data);
     // needs to convertTo CV_32F by hand
     world_Matrix.convertTo(world_Matrix, CV_32F);
-//    for(int i =0;i<world_Matrix.rows;i++)
-//    {
-//        for(int j=0;j<world_Matrix.cols; j++)
-//        {
-//            std::cout<<world_Matrix.at<float>(i, j)<<" ";
-//        }
-//        std::cout<<std::endl;
-//    }
     cv::Mat temp(3, num_corners, CV_32F);
     for(auto i: util::lang::indices(camera_coordinates))
     {
-        temp.col(i) = cv::Mat(camera_coordinates[i]);
+        cv::Mat temp_col = cv::Mat(camera_coordinates[i]).clone();
+        // needs to do deep copy
+        cv::Mat(camera_coordinates[i]).copyTo(temp.col(i));
+
     }
     assert(temp.cols == num_corners);
     cv::Mat row = cv::Mat::ones(1, temp.cols, CV_32F);
-    camera_Matrix.rowRange(0, 3) = temp;
-    camera_Matrix.row(3) = row;
+    temp.copyTo(camera_Matrix.rowRange(0, 3));
+    row.copyTo(camera_Matrix.row(3));
     // verify  their shape
     // (width, height)
     assert(camera_Matrix.size() == cv::Size(num_corners, 4));
@@ -114,39 +109,30 @@ bool DataProcess::prepareMatrices() {
     return true;
 }
 
-cv::Mat DataProcess::calculate_T_the_whole(cv::Mat camera_m, cv::Mat world_m) {
+cv::Mat DataProcess::calculate_T_the_whole() {
     // see opencv doc at cv::DecompTypes
-    for(int i =0;i<world_m.rows;i++)
-    {
-        for(int j=0;j<world_m.cols; j++)
-        {
-            std::cout<<world_m.at<float>(i, j)<<" ";
-        }
-        std::cout<<std::endl;
-    }
-    cv::Mat camera_m_T = cv::Mat(num_corners, 4, CV_32F);
-    cv::Mat world_m_T = cv::Mat(num_corners, 4, CV_32F);
-    camera_m_T = camera_m.t();
-    world_m_T  = world_m.t();
-//    for(int i =0;i<world_m.rows;i++)
-//    {
-//        for(int j=0;j<world_m.cols; j++)
-//        {
-//            world_m_T.at<float>(j,i) = world_m.at<float>(i, j);
-//        }
-//    }
 
-    for(int i =0;i<world_m_T.rows;i++)
-    {
-        for(int j=0;j<world_m_T.cols; j++)
-        {
-            std::cout<<world_m_T.at<float>(i, j)<<" ";
-        }
-        std::cout<<std::endl;
-    }
+    //std::cout<<world_Matrix<<std::endl;
+    //std::cout<<camera_Matrix<<std::endl;
+    cv::Mat temp;
+    world_Matrix.copyTo(temp);
+    //std::cout<<temp<<std::endl;
+    cv::Mat camera_Matrix_T = cv::Mat(num_corners, 4, CV_32F);
+    cv::Mat world_Matrix_T = cv::Mat(num_corners, 4, CV_32F);
+    world_Matrix_T  = temp.t();
+    camera_Matrix_T = camera_Matrix.t();
 
-    cv::solve(camera_m_T, world_m_T, transfer_Matrix, cv::DECOMP_NORMAL);
+
+    //std::cout<<camera_Matrix_T<<std::endl;
+    //std::cout<<world_Matrix_T<<std::endl;
+
+    cv::solve(camera_Matrix_T, world_Matrix_T, transfer_Matrix, cv::DECOMP_NORMAL);
     cv::transpose(transfer_Matrix, transfer_Matrix);
     printf("calculate transfer succeed!\n");
+
+}
+
+void DataProcess::test_transfer_matrix() {
+
 
 }
