@@ -20,14 +20,7 @@ void writeMatToFile(cv::Mat& m, const char* filename)
 	cv::FileStorage file(filename, cv::FileStorage::WRITE);
 	// Write to file!
 	file << "m" << m;
-	for(int i =0;i<m.rows;i++)
-    {
-	    for(int j=0;j<m.cols; j++)
-        {
-	        std::cout<<m.at<float>(i, j)<<" ";
-        }
-        std::cout<<std::endl;
-    }
+	std::cout<<m<<std::endl;
 }
 
 int main() 
@@ -112,11 +105,9 @@ int main()
 	// prepare the word_coordinate_matrix and camera-coordinate-matrix
 	dataProcess.prepareMatrices();
 	// use prepared matrices to calculate transfer matrix
-	dataProcess.calculate_T_the_whole(dataProcess.camera_Matrix, dataProcess.world_Matrix);
+	dataProcess.calculate_T_the_whole();
 	// write the calculate matrix to file
 	writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext");
-//	writeMatToFile(dataProcess.world_Matrix, "world_matrix.ext");
-//	writeMatToFile(dataProcess.camera_Matrix, "camera_Matrix.ext");
 	zed.close();
 	return 0;
 }
