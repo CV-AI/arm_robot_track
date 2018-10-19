@@ -111,20 +111,15 @@ bool DataProcess::prepareMatrices() {
 
 cv::Mat DataProcess::calculate_T_the_whole() {
     // see opencv doc at cv::DecompTypes
-
-    //std::cout<<world_Matrix<<std::endl;
-    //std::cout<<camera_Matrix<<std::endl;
+    // use temporary Mat or transpose() will  not work on world_Matrix (magic)
     cv::Mat temp;
     world_Matrix.copyTo(temp);
     //std::cout<<temp<<std::endl;
     cv::Mat camera_Matrix_T = cv::Mat(num_corners, 4, CV_32F);
     cv::Mat world_Matrix_T = cv::Mat(num_corners, 4, CV_32F);
+
     world_Matrix_T  = temp.t();
     camera_Matrix_T = camera_Matrix.t();
-
-
-    //std::cout<<camera_Matrix_T<<std::endl;
-    //std::cout<<world_Matrix_T<<std::endl;
 
     cv::solve(camera_Matrix_T, world_Matrix_T, transfer_Matrix, cv::DECOMP_NORMAL);
     cv::transpose(transfer_Matrix, transfer_Matrix);
@@ -133,6 +128,26 @@ cv::Mat DataProcess::calculate_T_the_whole() {
 }
 
 void DataProcess::test_transfer_matrix() {
+    // Declare what you need
+    const char* filename = "transfer_matrix.ext";
+    cv::FileStorage file(filename, cv::FileStorage::READ);
+    // read file, m is the name we give to transfer_matrix
+    file["m"]>>transfer_Matrix;
 
+    cv::Mat transfer_Matrix_T = transfer_Matrix.t();
+    std::cout<<transfer_Matrix_T<<std::endl;
+    cv::Mat camera_Matrix_T = camera_Matrix.t();
+    std::cout<<camera_Matrix_T<<std::endl;
+    cv::Mat world_Matrix_T = camera_Matrix_T*transfer_Matrix_T;
+    world_Matrix_T = world_Matrix_T.t();
+    std::cout<<world_Matrix_T<<std::endl;
+}
 
+void writeMatToFile(cv::Mat& m, const char* filename)
+{
+    // Declare what you need
+    cv::FileStorage file(filename, cv::FileStorage::WRITE);
+    // Write to file!
+    file << "m" << m;
+    std::cout<<m<<std::endl;
 }

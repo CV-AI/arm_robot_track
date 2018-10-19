@@ -37,3 +37,4 @@ public:
 	cv::Mat image_l;
 };
 
+void writeMatToFile(cv::Mat& m, const char* filename);
