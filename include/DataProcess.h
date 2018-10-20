@@ -4,12 +4,13 @@
 #include <vector>
 #include <range.h>
 
-#define num_corners 9
+#define num_corners 21
+const float rt = 1.4142; // root of 2
 class DataProcess
 {
 private:
 	const double pi = 3.1415926;
-	const float l = 40; // length of each block on the chessboard (millimeter)
+	const float l = 10.33; // length of each block on the chessboard (millimeter)
 
 public:
 	DataProcess();
@@ -38,3 +39,4 @@ public:
 };
 
 void writeMatToFile(cv::Mat& m, const char* filename);
+void readMatFromFile(cv::Mat& m, const char* filename);

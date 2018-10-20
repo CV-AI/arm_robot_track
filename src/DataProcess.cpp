@@ -82,10 +82,11 @@ bool DataProcess::find_camera_coordinates(cv::Mat &chessboard, cv::Size boardSiz
 bool DataProcess::prepareMatrices() {
     printf("Preparing matrices!\n");
     // left hand coordinate system, with x-axi points to bottom of the chessboard, origin-point at left-upper corner
-    float word_coordinate_data[num_corners * 4] = {0,  0,  0,   l, l,  l,  l*2,  l*2, l*2,
-                                                  0,  l,  l*2, 0, l,  l*2,  0,  l,   l*2,
-                                                  0,  0,  0,   0, 0,  0,    0,  0,   0,
-                                                  1,  1,  1,   1, 1,  1,    1,  1,   1};
+    float word_coordinate_data[num_corners * 4] =
+            {-3*rt*l/2, -3*rt*l/2, -3*rt*l/2, -rt*l, -rt*l, -rt*l, -rt*l/2, -rt*l/2, -rt*l/2,  0,  0,    0,   l, l,    l, l*2, l*2, l*2, 3*l, 3*l, 3*l,
+                     0,         l,       2*l,     0,     l,   2*l,       0,       l,     2*l,  0,  l,  l*2,   0, l,  l*2,   0,   l, l*2,   0,   l, 2*l,
+             -3*rt*l/2, -3*rt*l/2, -3*rt*l/2, -rt*l, -rt*l, -rt*l, -rt*l/2, -rt*l/2, -rt*l/2,  0,  0,    0,   0, 0,    0,   0,   0,   0,   0,   0,  0,
+                     1,         1,         1,     1,     1,     1,       1,       1,       1,  1,  1,    1,   1, 1,    1,   1,    1,   1,  1,   1,  1};
     world_Matrix = cv::Mat(4, num_corners, CV_32F, word_coordinate_data);
     // needs to convertTo CV_32F by hand
     world_Matrix.convertTo(world_Matrix, CV_32F);
@@ -97,6 +98,7 @@ bool DataProcess::prepareMatrices() {
         cv::Mat(camera_coordinates[i]).copyTo(temp.col(i));
 
     }
+
     assert(temp.cols == num_corners);
     cv::Mat row = cv::Mat::ones(1, temp.cols, CV_32F);
     temp.copyTo(camera_Matrix.rowRange(0, 3));
@@ -105,6 +107,7 @@ bool DataProcess::prepareMatrices() {
     // (width, height)
     assert(camera_Matrix.size() == cv::Size(num_corners, 4));
     assert(world_Matrix.size() == cv::Size(num_corners, 4));
+    writeMatToFile(world_Matrix, "world_Matrix_ground_truth.ext");
     printf("prepare matrices succeed!\n");
     return true;
 }
@@ -128,19 +131,26 @@ cv::Mat DataProcess::calculate_T_the_whole() {
 }
 
 void DataProcess::test_transfer_matrix() {
-    // Declare what you need
-    const char* filename = "transfer_matrix.ext";
-    cv::FileStorage file(filename, cv::FileStorage::READ);
-    // read file, m is the name we give to transfer_matrix
-    file["m"]>>transfer_Matrix;
+
+    readMatFromFile(transfer_Matrix, "transfer_matrix.ext");
+
 
     cv::Mat transfer_Matrix_T = transfer_Matrix.t();
-    std::cout<<transfer_Matrix_T<<std::endl;
+    // std::cout<<transfer_Matrix_T<<std::endl;
     cv::Mat camera_Matrix_T = camera_Matrix.t();
-    std::cout<<camera_Matrix_T<<std::endl;
+    // std::cout<<camera_Matrix_T<<std::endl;
     cv::Mat world_Matrix_T = camera_Matrix_T*transfer_Matrix_T;
+    // still calling it world_Matrix_T, just because I don't want to init another Mat
     world_Matrix_T = world_Matrix_T.t();
     std::cout<<world_Matrix_T<<std::endl;
+    writeMatToFile(world_Matrix_T, "world_Matrix_measure.ext");
+
+    // measure the error
+    readMatFromFile(world_Matrix, "world_Matrix_ground_truth.ext");
+    cv::Mat diff;
+    cv::absdiff(world_Matrix_T, world_Matrix, diff);
+    std::cout<<"The error is shown in this matrix: "<<std::endl;
+    std::cout<<diff<<std::endl;
 }
 
 void writeMatToFile(cv::Mat& m, const char* filename)
@@ -149,5 +159,14 @@ void writeMatToFile(cv::Mat& m, const char* filename)
     cv::FileStorage file(filename, cv::FileStorage::WRITE);
     // Write to file!
     file << "m" << m;
-    std::cout<<m<<std::endl;
+    //std::cout<<m<<std::endl;
+}
+
+void readMatFromFile(cv::Mat& m, const char* filename)
+{
+    // Declare what you need
+    cv::FileStorage file(filename, cv::FileStorage::READ);
+    assert(file.isOpened());
+    // read file!
+    file["m"]>>m;
 }

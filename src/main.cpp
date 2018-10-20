@@ -17,18 +17,23 @@ int main()
 {
 
 	Camera zed;
-	cv::Size boardSize(3,3);
+	cv::Size boardSize(3,7); // size(width, height), so we need to initialize it with (cols, rows)
 	DataProcess dataProcess;
 
 	cv::namedWindow("LEFT");
 	cv::namedWindow("RIGHT");
 
-	bool test = false;
+	// set to true when you try to find transfer_matrix
+	// set to false when you try to test transfer_matrix
+	bool test = 1;
+	// whether do tracking
+	bool tracking_state = true;
+    bool whether_continue = true;
+    bool found_chessboard_left = false;
 	InitParameters init_params;
 	init_params.camera_resolution = RESOLUTION_HD720;
 	init_params.camera_fps = 60;//֡��
-	//init_params.depth_mode = DEPTH_MODE_NONE;
-	//init_params.svo_input_filename.set("F:\\zikang\\zed-recording-video\\video.svo");
+
 
 	ERROR_CODE err = zed.open(init_params);
 	if (err != SUCCESS) 
@@ -46,8 +51,6 @@ int main()
 	Mat image_zed_right(new_width, new_height, MAT_TYPE_8U_C3);
 	std::cout << image_zed_right.getDataType() << std::endl;
 
-	bool whether_continue = true;
-    bool found_chessboard_left = false;
 	while (whether_continue)
 	{
 		cv::Mat image1;cv::Mat image2;
@@ -103,15 +106,19 @@ int main()
     dataProcess.prepareMatrices();
     if(!test)
     {
-
         // use prepared matrices to calculate transfer matrix
         dataProcess.calculate_T_the_whole();
         // write the calculate matrix to file
         writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext");
     }
-    else
+    if(test)
     {
         dataProcess.test_transfer_matrix();
+    }
+    while(tracking_state)
+    {
+        // do something
+        tracking_state = false;
     }
 
 	zed.close();
