@@ -83,10 +83,10 @@ bool DataProcess::prepareMatrices() {
     printf("Preparing matrices!\n");
     // left hand coordinate system, with x-axi points to bottom of the chessboard, origin-point at left-upper corner
     float word_coordinate_data[num_corners * 4] =
-            {-3*rt*l/2, -3*rt*l/2, -3*rt*l/2, -rt*l, -rt*l, -rt*l, -rt*l/2, -rt*l/2, -rt*l/2,  0,  0,    0,   l, l,    l, l*2, l*2, l*2, 3*l, 3*l, 3*l,
-                     0,         l,       2*l,     0,     l,   2*l,       0,       l,     2*l,  0,  l,  l*2,   0, l,  l*2,   0,   l, l*2,   0,   l, 2*l,
-             -3*rt*l/2, -3*rt*l/2, -3*rt*l/2, -rt*l, -rt*l, -rt*l, -rt*l/2, -rt*l/2, -rt*l/2,  0,  0,    0,   0, 0,    0,   0,   0,   0,   0,   0,  0,
-                     1,         1,         1,     1,     1,     1,       1,       1,       1,  1,  1,    1,   1, 1,    1,   1,    1,   1,  1,   1,  1};
+            {-rt*l/2, -rt*l/2, -rt*l/2,  0,  0,   0,   l,  l,    l,
+                   0,       l,     2*l,  0,  l, 2*l,   0,  l,  2*l,
+              rt*l/2,  rt*l/2,  rt*l/2,  0,  0,   0,   0,  0,    0,
+                   1,       1,       1,  1,  1,   1,   1,  1,    1};
     world_Matrix = cv::Mat(4, num_corners, CV_32F, word_coordinate_data);
     // needs to convertTo CV_32F by hand
     world_Matrix.convertTo(world_Matrix, CV_32F);
@@ -144,9 +144,8 @@ void DataProcess::test_transfer_matrix() {
     world_Matrix_T = world_Matrix_T.t();
     std::cout<<world_Matrix_T<<std::endl;
     writeMatToFile(world_Matrix_T, "world_Matrix_measure.ext");
-
     // measure the error
-    readMatFromFile(world_Matrix, "world_Matrix_ground_truth.ext");
+    readMatFromFile(world_Matrix, "world_Matrix_ground_truth_21.ext");
     cv::Mat diff;
     cv::absdiff(world_Matrix_T, world_Matrix, diff);
     std::cout<<"The error is shown in this matrix: "<<std::endl;

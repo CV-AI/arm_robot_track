@@ -10,7 +10,7 @@ class DataProcess
 {
 private:
 	const double pi = 3.1415926;
-	const float l = 10.33; // length of each block on the chessboard (millimeter)
+	const float l = 33.5; // length of each block on the chessboard (millimeter)
 
 public:
 	DataProcess();
