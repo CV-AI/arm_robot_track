@@ -17,7 +17,7 @@ int main()
 {
 
 	Camera zed;
-	cv::Size boardSize(3,7); // size(width, height), so we need to initialize it with (cols, rows)
+	cv::Size boardSize(3, 7); // size(width, height), so we need to initialize it with (cols, rows)
 	DataProcess dataProcess;
 
 	cv::namedWindow("LEFT");
@@ -33,7 +33,7 @@ int main()
 	InitParameters init_params;
 	init_params.camera_resolution = RESOLUTION_HD720;
 	init_params.camera_fps = 60;//֡��
-
+    //init_params.svo_input_filename.set("/home/zack/Videos/big_board.svo");
 
 	ERROR_CODE err = zed.open(init_params);
 	if (err != SUCCESS) 
