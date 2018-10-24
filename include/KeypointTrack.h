@@ -11,7 +11,6 @@ public:
 	~KeypointTrack();
 	void fistFrameprocess(int k);
 	void frameProcessing(int k);
-	//void templMatch(int k);
 	void findPoint(int k);
     static void onMouseLeft(int event, int x, int y, int flags, void *param);
     static void onMouseRight(int event, int x, int y, int flags, void *param);
@@ -27,8 +26,6 @@ public:
 
 	// variables used in Mouse Call back
 
-	static cv::Mat mouse_image_l;
-	static cv::Mat mouse_image_r;
 	static cv::Rect mouse_rect[2][3];
     static bool get_rois_l;
     static bool get_rois_r;

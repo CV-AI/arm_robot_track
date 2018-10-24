@@ -25,7 +25,8 @@ bool readMatFromFile(cv::Mat& m, const char* filename)
 }
 DataProcess::DataProcess()
 {
-    fout.open("data.txt");
+    camera_fout.open("camera_data.txt");
+    world_fout.open("world_data.txt");
     // start counting when the instance is created
     start_time = duration_cast< milliseconds >(system_clock::now().time_since_epoch());
 }
@@ -33,7 +34,7 @@ DataProcess::DataProcess()
 
 DataProcess::~DataProcess()
 {
-    fout.close();
+    camera_fout.close();
 }
 
 
@@ -43,7 +44,7 @@ void DataProcess::getTime() {
     time = duration_cast< milliseconds >(system_clock::now().time_since_epoch()) - start_time;
     std::cout << "time:  " << time.count() << "  " << std::endl;
     // time in milliseconds
-    fout << time.count() << "  " ;
+    camera_fout << time.count() << "  " ;
 }
 // map coordinates in 2D to 3D
 void DataProcess::mapTo3D()
@@ -174,6 +175,7 @@ void DataProcess::process() {
     // prepare Matrices and world coordinates of keyPoints
     prepareMatrix();
     getTime();
+
     double a = sqrt(pow(keyPoints3D[0].x- keyPoints3D[1].x, 2) + pow(keyPoints3D[0].y - keyPoints3D[1].y, 2) + pow(keyPoints3D[0].z - keyPoints3D[1].z, 2));
     double b = sqrt(pow(keyPoints3D[1].x - keyPoints3D[2].x, 2) + pow(keyPoints3D[1].y - keyPoints3D[2].y, 2) + pow(keyPoints3D[1].z - keyPoints3D[2].z, 2));
     double c = sqrt(pow(keyPoints3D[2].x - keyPoints3D[0].x, 2) + pow(keyPoints3D[2].y - keyPoints3D[0].y, 2) + pow(keyPoints3D[2].z - keyPoints3D[0].z, 2));
@@ -181,22 +183,30 @@ void DataProcess::process() {
     double cos = (a*a + b*b - c*c) / (2 * a*b);
     double angle = acos(cos) * 180 / pi;
 
+    // camera coordinates
+    camera_fout << a << "   ";
+    camera_fout << b << "   ";
+    camera_fout << keyPoints3D[0].x << "   " << keyPoints3D[0].y << "   " << keyPoints3D[0].z << "   " ;
+    camera_fout << keyPoints3D[1].x << "   " << keyPoints3D[1].y << "   " << keyPoints3D[1].z << "   " ;
+    camera_fout << keyPoints3D[2].x << "   " << keyPoints3D[2].y << "   " << keyPoints3D[2].z << "   " ;
+    camera_fout << angle << std::endl << std::endl;
+
+    // world coordinates
     std::cout << "The length of arm is:" << a << std::endl;
     std::cout << "The length of elbow is:" << b << std::endl;
-    std::cout << "Coordinate of shoulder is:" << "(" << keyPoints3D[0].x << "," << keyPoints3D[0].y << "," << keyPoints3D[0].z << ")" << std::endl;
-    std::cout << "Coordinate of elbow is:" << "(" << keyPoints3D[1].x << "," << keyPoints3D[1].y << "," << keyPoints3D[1].z << ")" << std::endl;
-    std::cout << "Coordinate of wrist is:" << "(" << keyPoints3D[2].x << "," << keyPoints3D[2].y << "," << keyPoints3D[2].z << ")" << std::endl;
+    std::cout << "Coordinate of shoulder is:" << "(" << keyPoints_world[0].x << "," << keyPoints_world[0].y << "," << keyPoints_world[0].z << ")" << std::endl;
+    std::cout << "Coordinate of elbow is:" << "(" << keyPoints_world[1].x << "," << keyPoints_world[1].y << "," << keyPoints_world[1].z << ")" << std::endl;
+    std::cout << "Coordinate of wrist is:" << "(" << keyPoints_world[2].x << "," << keyPoints_world[2].y << "," << keyPoints_world[2].z << ")" << std::endl;
     std::cout << "The angle is:" << angle << std::endl << std::endl;
 
-    fout << a << "   ";
-    fout << b << "   ";
-    fout << keyPoints3D[0].x << "   " << keyPoints3D[0].y << "   " << keyPoints3D[0].z << "   " ;
-    fout << keyPoints3D[1].x << "   " << keyPoints3D[1].y << "   " << keyPoints3D[1].z << "   " ;
-    fout << keyPoints3D[2].x << "   " << keyPoints3D[2].y << "   " << keyPoints3D[2].z << "   " ;
-    fout << angle << std::endl << std::endl;
+    world_fout << a << "   ";
+    world_fout << b << "   ";
+    world_fout << keyPoints_world[0].x << "   " << keyPoints_world[0].y << "   " << keyPoints_world[0].z << "   " ;
+    world_fout << keyPoints_world[1].x << "   " << keyPoints_world[1].y << "   " << keyPoints_world[1].z << "   " ;
+    world_fout << keyPoints_world[2].x << "   " << keyPoints_world[2].y << "   " << keyPoints_world[2].z << "   " ;
+    world_fout << angle << std::endl << std::endl;
+
 }
-
-
 
 bool DataProcess::prepareMatrix() {
     // prepare camera_matrix
@@ -204,7 +214,7 @@ bool DataProcess::prepareMatrix() {
     cv::Mat last_element = cv::Mat::ones(1, 3, CV_32F);
     for(int i = 0;i<3; i++)
     {
-        temp.col(i) = cv::Mat(keyPoints3D[i]);
+        temp.col(i) = cv::Mat(keyPoints_world[i]);
     }
     temp.push_back(last_element);
     keypoints_camera_Matrix = temp.clone();
@@ -221,4 +231,6 @@ bool DataProcess::prepareMatrix() {
     }
     return true;
 }
+
+
 

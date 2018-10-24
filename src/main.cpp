@@ -14,7 +14,6 @@ cv::Mat slMat2cvMat(Mat& input);
 
 int main() 
 {
-
 	Camera zed;
 	cv::Size boardSize(3, 3); // size(width, height), so we need to initialize it with (cols, rows)
 	DataProcess dataProcess;
@@ -24,7 +23,6 @@ int main()
 
 	// set to true when you try to find transfer_matrix
 	// set to false when you try to test transfer_matrix
-	bool test = 0;
 	// whether do tracking
 	bool tracking_state = true;
     bool finding_transfer_matrix = true;
@@ -98,19 +96,20 @@ int main()
                     found_chessboard_left = false;
                     cv::imshow("LEFT", dataProcess.image_l);
                     cv::imshow("RIGHT", dataProcess.image_r);
-                    cv::waitKey(0);
+
                 }
             }
-
+            cv::imshow("LEFT", dataProcess.image_l);
+            cv::imshow("RIGHT", dataProcess.image_r);
+            cv::waitKey(0);
             // get chessboard corners, and mat them to 3D coordinate
             dataProcess.mapChessBoardTo3D();
             // prepare the world_matrix and camera-matrix
-            // there is no point to prepare world_matrix, but for the sake of simplicity, let's do it
             dataProcess.prepareChessBoardMatrices();
             // use prepared matrices to calculate transfer matrix
             dataProcess.calculate_T_the_whole();
             // write the calculate matrix to file
-            writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext");
+            assert(writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext"));
             break;
         case 'e':
             // entering exam mode
@@ -119,17 +118,9 @@ int main()
             // prepare the world_matrix and camera-matrix
             // there is no point to prepare world_matrix, but for the sake of simplicity, let's do it
             dataProcess.prepareChessBoardMatrices();
-            if(!test)
-            {
-                // use prepared matrices to calculate transfer matrix
-                dataProcess.calculate_T_the_whole();
-                // write the calculate matrix to file
-                writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext");
-            }
-            if(test)
-            {
-                dataProcess.test_transfer_matrix();
-            }
+
+            dataProcess.test_transfer_matrix();
+
         case 't':
             // entering tracking mode
             KeypointTrack kpt;
@@ -155,8 +146,6 @@ int main()
                     kpt.image_l.convertTo(kpt.image_l, CV_8U);
                     assert(kpt.image_r.channels() == 3 && kpt.image_l.channels() == 3);
 
-                    KeypointTrack::mouse_image_r = kpt.image_r.clone();
-                    KeypointTrack::mouse_image_l = kpt.image_l.clone();
                     if(KeypointTrack::get_rois_l && KeypointTrack::get_rois_r)
                     {
                         if (first_frame)

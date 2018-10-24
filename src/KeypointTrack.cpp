@@ -91,39 +91,38 @@ void KeypointTrack::findPoint(int k)
 
         cv::cvtColor(gray_image, gray_image, cv::COLOR_BGR2GRAY);
         // InputArray image, OutputArray corners, int maxCorners, double qualityLevel, double minDistance
-        cv::goodFeaturesToTrack(gray_image, corners, 7, 0.01, 4);
-        cv::Point mean;
-
-        for(auto i: util::lang::indices(corners))
-        {
-            mean += corners[i];
-        }
-        mean = mean/float(corners.size());
-        double distance_pre;
-        cv::Point temp = corners[0];
-        distance_pre = sqrt(pow(corners[0].x, 2)+pow(corners[0].y, 2));
-        for(auto i: util::lang::indices(corners))
-        {
-            if(0<i)
-            {
-
-                double distance = sqrt(pow(corners[i].x, 2)+pow(corners[i].y, 2));
-                if(distance<distance_pre)
-                {
-                    temp = corners[i];
-                }
-            }
-        }
+        cv::goodFeaturesToTrack(gray_image, corners, 1, 0.01, 4);
+//        cv::Point mean;
+//
+//        for(auto i: util::lang::indices(corners))
+//        {
+//            mean += corners[i];
+//        }
+//        mean = mean/float(corners.size());
+//        double distance_pre;
+//        cv::Point temp = corners[0];
+//        distance_pre = sqrt(pow(corners[0].x, 2)+pow(corners[0].y, 2));
+//        for(auto i: util::lang::indices(corners))
+//        {
+//            if(0<i)
+//            {
+//
+//                double distance = sqrt(pow(corners[i].x, 2)+pow(corners[i].y, 2));
+//                if(distance<distance_pre)
+//                {
+//                    temp = corners[i];
+//                }
+//            }
+//        }
         // set to the corner in center
-		keyPoints[k][i].x = temp.x;
-		keyPoints[k][i].y = temp.y;
+		keyPoints[k][i].x = corners[0].x;
+		keyPoints[k][i].y = corners[0].y;
 
 		circle(image, keyPoints[k][i], 2, Scalar(0, 0, 0), 2);
 	}
 }
 
 void KeypointTrack::onMouseLeft(int event, int x, int y, int flags, void *param) {
-    Mat img = mouse_image_l.clone();
     static cv::Point cursor;
     switch (event)
     {
@@ -171,8 +170,6 @@ bool KeypointTrack::get_rois_l = false;
 bool KeypointTrack::get_rois_r = false;
 int KeypointTrack::rect_id_r = 0;
 int KeypointTrack::rect_id_l = 0;
-cv::Mat KeypointTrack::mouse_image_r = cv::Mat::zeros(3, 3, CV_8U);
-cv::Mat KeypointTrack::mouse_image_l = cv::Mat::zeros(3, 3, CV_8U);
 cv::Rect KeypointTrack::mouse_rect[2][3] = {{cv::Rect(0, 0, 4, 4), cv::Rect(0, 0, 4, 4), cv::Rect(0, 0, 4, 4)},
                                             {cv::Rect(0, 0, 4, 4), cv::Rect(0, 0, 4, 4), cv::Rect(0, 0, 4, 4)}};
 
