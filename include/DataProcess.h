@@ -20,7 +20,8 @@ public:
 
 	// this vector needs to be initialized(with size being specified)
 	std::vector<cv::Point3f> camera_coordinates = std::vector<cv::Point3f> (num_corners);
-    std::ofstream fout;
+    std::ofstream camera_fout;
+    std::ofstream world_fout;
 	cv::Mat camera_Matrix = cv::Mat (4, num_corners, CV_32F);
 	cv::Mat world_Matrix = cv::Mat (4, num_corners, CV_32F);
 	cv::Mat transfer_Matrix =cv::Mat (4, 4, CV_32F);
