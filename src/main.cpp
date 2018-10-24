@@ -166,10 +166,12 @@ int main()
                             for (int i = 0; i < 2; i++)
                             {
                                 if (i == 0)
-                                    kpt.image = kpt.image_r;
-                                else
                                     kpt.image = kpt.image_l;
+                                else
+                                    kpt.image = kpt.image_r;
                                 kpt.fistFrameprocess(i);
+                                cv::imwrite("right.jpg", kpt.image_r);
+                                cv::imwrite("left.jpg", kpt.image_l);
                             }
                             first_frame = false;
                         }
@@ -178,9 +180,9 @@ int main()
                             for (int i = 0; i < 2; i++)
                             {
                                 if (i == 0)
-                                    kpt.image = kpt.image_r;
-                                else
                                     kpt.image = kpt.image_l;
+                                else
+                                    kpt.image = kpt.image_r;
                                 kpt.frameProcessing(i);
                             }
                         }
@@ -194,7 +196,7 @@ int main()
                         dataProcess.process();
                     }
                     cv::imshow("RIGHT", kpt.image_r);
-                    cv::imwrite("right.jpg", kpt.image_r);
+
                     cv::imshow("LEFT", kpt.image_l);
                     char key = cv::waitKey(1);
                     if (key == 'q')

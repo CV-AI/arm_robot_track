@@ -79,58 +79,6 @@ void KeypointTrack::frameProcessing(int k)
 }
 
 
-//// 本函数通过模板匹配来找到标记的初始位置
-//void KeypointTrack::templMatch(int k)
-//{
-//	Mat src, result;
-//	image.copyTo(src);
-//
-//	Rect2d rects[3];
-//
-//	// 初始化输出结果矩阵
-//	int result_cols = src.cols - templ.cols + 1;
-//	int result_rows = src.rows - templ.rows + 1;
-//	result.create(result_rows, result_cols, CV_32FC1);
-//    //cout<<src.dims<<endl<<templ.dims;
-//	// 通过模板匹配找到标记所在的位置
-//	for (int i = 0; i < 3; i++)
-//	{
-//
-//		matchTemplate(src, templ, result, TM_CCORR);
-//		normalize(result, result, 0, 1, NORM_MINMAX, -1, Mat());
-//
-//		double minValue, maxValue;
-//		Point minLocation, maxLocation, matchLocation;
-//		minMaxLoc(result, &minValue, &maxValue, &minLocation, &maxLocation, Mat());
-//		matchLocation = maxLocation;
-//
-//		rects[i].x = matchLocation.x;
-//		rects[i].y = matchLocation.y;
-//		rects[i].width = templ.cols;
-//		rects[i].height = templ.rows;
-//
-//	}
-//	// 对检测到的三个点按照位置（y坐标）进行排序
-//	Rect2d tr;
-//	for (int j = 0; j < 2; j++)
-//	{
-//		for (int i = 0; i < 2-j; i++)
-//		{
-//			if (rects[i].y > rects[i + 1].y)
-//			{
-//				tr = rects[i];
-//				rects[i] = rects[i + 1];
-//				rects[i + 1] = tr;
-//			}
-//		}
-//	}
-//	for (int i = 0; i < 3; i++)
-//		init_rects[k][i] = rects[i];
-//}
-
-
-
-
 // 获取标记的中心点
 void KeypointTrack::findPoint(int k)
 {
@@ -158,6 +106,7 @@ void KeypointTrack::findPoint(int k)
         {
             if(0<i)
             {
+
                 double distance = sqrt(pow(corners[i].x, 2)+pow(corners[i].y, 2));
                 if(distance<distance_pre)
                 {
@@ -183,6 +132,7 @@ void KeypointTrack::onMouseLeft(int event, int x, int y, int flags, void *param)
             cursor = cv::Point(x, y);
             break;
         case EVENT_LBUTTONUP:
+
             mouse_rect[0][rect_id_l].x = MIN(x, cursor.x);
             mouse_rect[0][rect_id_l].y = MIN(y, cursor.y);
             mouse_rect[0][rect_id_l].width = abs(x - cursor.x);
@@ -196,7 +146,7 @@ void KeypointTrack::onMouseLeft(int event, int x, int y, int flags, void *param)
 }
 
 void KeypointTrack::onMouseRight(int event, int x, int y, int flags, void *param) {
-    Mat img = mouse_image_r.clone();
+    //Mat img = mouse_image_r.clone();
     static cv::Point cursor;
     switch (event)
     {
