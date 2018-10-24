@@ -1,20 +1,50 @@
 
 #include <DataProcess.h>
+using namespace std::chrono; // something about time
+bool writeMatToFile(cv::Mat& m, const char* filename)
+{
+    printf("trying to open file!\n");
+    // Declare what you need
+    cv::FileStorage file(filename, cv::FileStorage::WRITE);
+    assert(file.isOpened());
+    printf("writing file: file is opened!\n");
+    // Write to file!
+    file << "m" << m;
+    //std::cout<<m<<std::endl;
+    return true;
+}
 
-#include "DataProcess.h"
-
-
-
+bool readMatFromFile(cv::Mat& m, const char* filename)
+{
+    // Declare what you need
+    cv::FileStorage file(filename, cv::FileStorage::READ);
+    assert(file.isOpened());
+    // read file!
+    file["m"]>>m;
+    return true;
+}
 DataProcess::DataProcess()
 {
+    fout.open("data.txt");
+    // start counting when the instance is created
+    start_time = duration_cast< milliseconds >(system_clock::now().time_since_epoch());
 }
 
 
 DataProcess::~DataProcess()
 {
+    fout.close();
 }
 
 
+void DataProcess::getTime() {
+
+    // time: duration
+    time = duration_cast< milliseconds >(system_clock::now().time_since_epoch()) - start_time;
+    std::cout << "time:  " << time.count() << "  " << std::endl;
+    // time in milliseconds
+    fout << time.count() << "  " ;
+}
 // map coordinates in 2D to 3D
 void DataProcess::mapTo3D()
 {
@@ -23,10 +53,13 @@ void DataProcess::mapTo3D()
 	const double f = 683.3077785416543;
 	const int T = 120;
 
-    _3Dpoint.x=(2*points[0].x-cx)*T/(2*(points[0].x-points[1].x));
-    _3Dpoint.y= -(2 * points[0].y - cy)*T / (2 * (points[0].x - points[1].x));
-    _3Dpoint.z = f*T / (2 * (points[0].x - points[1].x));
 
+    for(int i =0;i<3; i++)
+    {
+        keyPoints3D[i].x=(2*keyPoints[0][i].x-cx)*T/(2*(keyPoints[0][i].x-keyPoints[1][i].x));
+        keyPoints3D[i].y= -(2 * keyPoints[0][i].y - cy)*T / (2 * (keyPoints[0][i].x - keyPoints[1][i].x));
+        keyPoints3D[i].z = f*T / (2 * (keyPoints[0][i].x - keyPoints[1][i].x));
+    }
 }
 
 void DataProcess::mapChessBoardTo3D() {
@@ -50,28 +83,7 @@ void DataProcess::mapChessBoardTo3D() {
     }
     printf("\nmap ChessBoard corners succeed!\n");
 }
-cv::Matx44f DataProcess::calculate(cv::Mat camera_coordinate_matrix, cv::Mat word_coordinate_matrix)
-{
 
-	cv::Mat X = camera_coordinate_matrix;
-	cv::Mat xs = word_coordinate_matrix.rowRange(0, 0);
-	cv::Mat ys = word_coordinate_matrix.rowRange(1, 1);
-	cv::Mat zs = word_coordinate_matrix.rowRange(2, 2);
-	cv::Mat coeff_1, coeff_2, coeff_3;
-    // see opencv doc at cv::DecompTypes
-    cv::solve(X, xs, coeff_1, cv::DECOMP_NORMAL);
-    cv::solve(X, xs, coeff_2, cv::DECOMP_NORMAL);
-    cv::solve(X, xs, coeff_3, cv::DECOMP_NORMAL);
-	cv::Matx44f T(0.0, 0.0, 0.0, 0.0,
-		0.0, 0.0, 0.0, 0.0,
-		0.0, 0.0, 0.0, 0.0,
-		0.0, 0.0, 0.0, 1.0); // transfer matrix
-	T.row(0) = coeff_1;
-	T.row(1) = coeff_2;
-	T.row(2) = coeff_3;
-	return T;
-	
-}
 
 bool DataProcess::find_camera_coordinates(cv::Mat &chessboard, cv::Size boardSize) {
     bool found = cv::findChessboardCorners(chessboard, boardSize, imagecorners);
@@ -79,7 +91,7 @@ bool DataProcess::find_camera_coordinates(cv::Mat &chessboard, cv::Size boardSiz
     return found;
 }
 
-bool DataProcess::prepareMatrices() {
+bool DataProcess::prepareChessBoardMatrices() {
     printf("Preparing matrices!\n");
     // left hand coordinate system, with x-axi points to bottom of the chessboard, origin-point at left-upper corner
     float word_coordinate_data[num_corners * 4] =
@@ -112,7 +124,8 @@ bool DataProcess::prepareMatrices() {
     return true;
 }
 
-cv::Mat DataProcess::calculate_T_the_whole() {
+
+bool DataProcess::calculate_T_the_whole() {
     // see opencv doc at cv::DecompTypes
     // use temporary Mat or transpose() will  not work on world_Matrix (magic)
     cv::Mat temp;
@@ -126,7 +139,9 @@ cv::Mat DataProcess::calculate_T_the_whole() {
 
     cv::solve(camera_Matrix_T, world_Matrix_T, transfer_Matrix, cv::DECOMP_NORMAL);
     cv::transpose(transfer_Matrix, transfer_Matrix);
-    printf("calculate transfer succeed!\n");
+    printf("calculate transfer matrix succeed!\n");
+    // NOTE: you need to return something if the function return type is not void
+    return true;
 
 }
 
@@ -152,20 +167,58 @@ void DataProcess::test_transfer_matrix() {
     std::cout<<diff<<std::endl;
 }
 
-void writeMatToFile(cv::Mat& m, const char* filename)
-{
-    // Declare what you need
-    cv::FileStorage file(filename, cv::FileStorage::WRITE);
-    // Write to file!
-    file << "m" << m;
-    //std::cout<<m<<std::endl;
+void DataProcess::process() {
+
+    // map found key points to 3D
+    mapTo3D();
+    // prepare Matrices and world coordinates of keyPoints
+    prepareMatrix();
+    getTime();
+    double a = sqrt(pow(keyPoints3D[0].x- keyPoints3D[1].x, 2) + pow(keyPoints3D[0].y - keyPoints3D[1].y, 2) + pow(keyPoints3D[0].z - keyPoints3D[1].z, 2));
+    double b = sqrt(pow(keyPoints3D[1].x - keyPoints3D[2].x, 2) + pow(keyPoints3D[1].y - keyPoints3D[2].y, 2) + pow(keyPoints3D[1].z - keyPoints3D[2].z, 2));
+    double c = sqrt(pow(keyPoints3D[2].x - keyPoints3D[0].x, 2) + pow(keyPoints3D[2].y - keyPoints3D[0].y, 2) + pow(keyPoints3D[2].z - keyPoints3D[0].z, 2));
+
+    double cos = (a*a + b*b - c*c) / (2 * a*b);
+    double angle = acos(cos) * 180 / pi;
+
+    std::cout << "The length of arm is:" << a << std::endl;
+    std::cout << "The length of elbow is:" << b << std::endl;
+    std::cout << "Coordinate of shoulder is:" << "(" << keyPoints3D[0].x << "," << keyPoints3D[0].y << "," << keyPoints3D[0].z << ")" << std::endl;
+    std::cout << "Coordinate of elbow is:" << "(" << keyPoints3D[1].x << "," << keyPoints3D[1].y << "," << keyPoints3D[1].z << ")" << std::endl;
+    std::cout << "Coordinate of wrist is:" << "(" << keyPoints3D[2].x << "," << keyPoints3D[2].y << "," << keyPoints3D[2].z << ")" << std::endl;
+    std::cout << "The angle is:" << angle << std::endl << std::endl;
+
+    fout << a << "   ";
+    fout << b << "   ";
+    fout << keyPoints3D[0].x << "   " << keyPoints3D[0].y << "   " << keyPoints3D[0].z << "   " ;
+    fout << keyPoints3D[1].x << "   " << keyPoints3D[1].y << "   " << keyPoints3D[1].z << "   " ;
+    fout << keyPoints3D[2].x << "   " << keyPoints3D[2].y << "   " << keyPoints3D[2].z << "   " ;
+    fout << angle << std::endl << std::endl;
 }
 
-void readMatFromFile(cv::Mat& m, const char* filename)
-{
-    // Declare what you need
-    cv::FileStorage file(filename, cv::FileStorage::READ);
-    assert(file.isOpened());
-    // read file!
-    file["m"]>>m;
+
+
+bool DataProcess::prepareMatrix() {
+    // prepare camera_matrix
+    cv::Mat temp = cv::Mat(3, 3, CV_32F);
+    cv::Mat last_element = cv::Mat::ones(1, 3, CV_32F);
+    for(int i = 0;i<3; i++)
+    {
+        temp.col(i) = cv::Mat(keyPoints3D[i]);
+    }
+    temp.push_back(last_element);
+    keypoints_camera_Matrix = temp.clone();
+    assert(keypoints_camera_Matrix.size() == cv::Size(3, 4));
+
+    // prepare world matrix
+    keypoints_world_Matrix = transfer_Matrix*keypoints_camera_Matrix;
+    // move redundant row
+    keypoints_world_Matrix = keypoints_world_Matrix(cv::Rect(0, 0, 3, 3));
+    assert(keypoints_world_Matrix.size() == cv::Size(3, 3));
+    for(int i = 0;i<3; i++)
+    {
+        keyPoints_world[i] = cv::Point3d(keypoints_world_Matrix.col(i));
+    }
+    return true;
 }
+

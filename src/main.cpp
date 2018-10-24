@@ -3,10 +3,9 @@
 #include <cmath>
 #include <iostream>
 #include "DataProcess.h"
-#include "TemplateMatch.h"
 #include <vector>
 #include <string>
-
+#include "KeypointTrack.h"
 using namespace sl;
 
 cv::Mat slMat2cvMat(Mat& input);
@@ -17,7 +16,7 @@ int main()
 {
 
 	Camera zed;
-	cv::Size boardSize(3, 7); // size(width, height), so we need to initialize it with (cols, rows)
+	cv::Size boardSize(3, 3); // size(width, height), so we need to initialize it with (cols, rows)
 	DataProcess dataProcess;
 
 	cv::namedWindow("LEFT");
@@ -25,11 +24,12 @@ int main()
 
 	// set to true when you try to find transfer_matrix
 	// set to false when you try to test transfer_matrix
-	bool test = 1;
+	bool test = 0;
 	// whether do tracking
 	bool tracking_state = true;
-    bool whether_continue = true;
+    bool finding_transfer_matrix = true;
     bool found_chessboard_left = false;
+    char mode;
 	InitParameters init_params;
 	init_params.camera_resolution = RESOLUTION_HD720;
 	init_params.camera_fps = 60;//֡��
@@ -51,76 +51,159 @@ int main()
 	Mat image_zed_right(new_width, new_height, MAT_TYPE_8U_C3);
 	std::cout << image_zed_right.getDataType() << std::endl;
 
-	while (whether_continue)
-	{
-		cv::Mat image1;cv::Mat image2;
-		if (zed.grab() == SUCCESS)
-		{
-			zed.retrieveImage(image_zed_right, VIEW_RIGHT, MEM_CPU, new_width, new_height);
-			zed.retrieveImage(image_zed_left, VIEW_LEFT, MEM_CPU, new_width, new_height);
-
-			dataProcess.image_r = slMat2cvMat(image_zed_right);
-			dataProcess.image_l = slMat2cvMat(image_zed_left);
-
-			cv::cvtColor(dataProcess.image_l, dataProcess.image_l, cv::COLOR_BGRA2BGR);
-			cv::cvtColor(dataProcess.image_r, dataProcess.image_r, cv::COLOR_BGRA2BGR);
-			dataProcess.image_r.convertTo(dataProcess.image_r, CV_8U);
-			dataProcess.image_l.convertTo(dataProcess.image_l, CV_8U);
-			assert(dataProcess.image_r.channels() == 3&& dataProcess.image_l.channels()==3);
-			//find corner coordinates in both left and right view
-
-			for(int num_picture=0; num_picture<2;num_picture++)
+    cv::Mat show_in_the_begining = cv::Mat::ones(255,255, CV_8U);
+    cv::imshow("Begin", show_in_the_begining);
+    mode = cv::waitKey(0);
+	switch (mode)
+    {
+        case 'p':
+            while (finding_transfer_matrix)
             {
-			    if(num_picture==0)
+                if (zed.grab() == SUCCESS)
                 {
-			        if(dataProcess.find_camera_coordinates(dataProcess.image_l, boardSize)) {
-                        printf("Found left view corners successfully!\n");
-                        dataProcess.corners_l = dataProcess.imagecorners;
-                        found_chessboard_left = true;
+                    zed.retrieveImage(image_zed_right, VIEW_RIGHT, MEM_CPU, new_width, new_height);
+                    zed.retrieveImage(image_zed_left, VIEW_LEFT, MEM_CPU, new_width, new_height);
+
+                    dataProcess.image_r = slMat2cvMat(image_zed_right);
+                    dataProcess.image_l = slMat2cvMat(image_zed_left);
+
+                    cv::cvtColor(dataProcess.image_l, dataProcess.image_l, cv::COLOR_BGRA2BGR);
+                    cv::cvtColor(dataProcess.image_r, dataProcess.image_r, cv::COLOR_BGRA2BGR);
+                    dataProcess.image_r.convertTo(dataProcess.image_r, CV_8U);
+                    dataProcess.image_l.convertTo(dataProcess.image_l, CV_8U);
+                    assert(dataProcess.image_r.channels() == 3&& dataProcess.image_l.channels()==3);
+                    //find corner coordinates in both left and right view
+
+                    for(int num_picture=0; num_picture<2;num_picture++)
+                    {
+                        if(num_picture==0)
+                        {
+                            if(dataProcess.find_camera_coordinates(dataProcess.image_l, boardSize)) {
+                                printf("Found left view corners successfully!\n");
+                                dataProcess.corners_l = dataProcess.imagecorners;
+                                found_chessboard_left = true;
+                            }
+                        }
+                        // ensure the left and right chessboard were found at the same time;
+                        if(num_picture==1 && found_chessboard_left)
+                        {
+                            if(dataProcess.find_camera_coordinates(dataProcess.image_r, boardSize)) {
+                                printf("Found right view corners successfully!\n");
+                                dataProcess.corners_r = dataProcess.imagecorners;
+                                finding_transfer_matrix = false;
+                            }
+                        }
                     }
-                }
-                // ensure the left and right chessboard were found at the same time;
-                if(num_picture==1 && found_chessboard_left)
-                {
-                    if(dataProcess.find_camera_coordinates(dataProcess.image_r, boardSize)) {
-                        printf("Found right view corners successfully!\n");
-                        dataProcess.corners_r = dataProcess.imagecorners;
-                        whether_continue = false;
-                    }
+
+                    found_chessboard_left = false;
+                    cv::imshow("LEFT", dataProcess.image_l);
+                    cv::imshow("RIGHT", dataProcess.image_r);
+                    cv::waitKey(0);
                 }
             }
 
-            found_chessboard_left = false;
-            cv::imshow("LEFT", dataProcess.image_l);
-			cv::imshow("RIGHT", dataProcess.image_r);
-			cv::waitKey(1);
-		}
-	}
-    cv::imshow("LEFT", dataProcess.image_l);
-    cv::imshow("RIGHT", dataProcess.image_r);
-    cv::waitKey(0);
-    // get chessboard corners, and mat them to 3D coordinate
-    dataProcess.mapChessBoardTo3D();
-    // prepare the world_matrix and camera-matrix
-    // there is no point to prepare world_matrix, but for the sake of simplicity, let's do it
-    dataProcess.prepareMatrices();
-    if(!test)
-    {
-        // use prepared matrices to calculate transfer matrix
-        dataProcess.calculate_T_the_whole();
-        // write the calculate matrix to file
-        writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext");
-    }
-    if(test)
-    {
-        dataProcess.test_transfer_matrix();
-    }
-    while(tracking_state)
-    {
-        // do something
-        tracking_state = false;
-    }
+            // get chessboard corners, and mat them to 3D coordinate
+            dataProcess.mapChessBoardTo3D();
+            // prepare the world_matrix and camera-matrix
+            // there is no point to prepare world_matrix, but for the sake of simplicity, let's do it
+            dataProcess.prepareChessBoardMatrices();
+            // use prepared matrices to calculate transfer matrix
+            dataProcess.calculate_T_the_whole();
+            // write the calculate matrix to file
+            writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext");
+            break;
+        case 'e':
+            // entering exam mode
+            // get chessboard corners, and mat them to 3D coordinate
+            dataProcess.mapChessBoardTo3D();
+            // prepare the world_matrix and camera-matrix
+            // there is no point to prepare world_matrix, but for the sake of simplicity, let's do it
+            dataProcess.prepareChessBoardMatrices();
+            if(!test)
+            {
+                // use prepared matrices to calculate transfer matrix
+                dataProcess.calculate_T_the_whole();
+                // write the calculate matrix to file
+                writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext");
+            }
+            if(test)
+            {
+                dataProcess.test_transfer_matrix();
+            }
+        case 't':
+            // entering tracking mode
+            KeypointTrack kpt;
+            bool first_frame = true;
+            readMatFromFile(dataProcess.transfer_Matrix, "transfer_matrix.ext");
+            cv::setMouseCallback("RIGHT", KeypointTrack::onMouseRight);
+            cv::setMouseCallback("LEFT", KeypointTrack::onMouseLeft);
+            while(tracking_state)
+            {
+                // do something
+                if (zed.grab() == SUCCESS)     //消耗3ms，取图片
+                {
+                    zed.retrieveImage(image_zed_right, VIEW_RIGHT, MEM_CPU, new_width, new_height);//消耗5ms
+                    zed.retrieveImage(image_zed_left, VIEW_LEFT, MEM_CPU, new_width, new_height);//消耗5ms
 
+                    kpt.image_r = slMat2cvMat(image_zed_right);
+                    kpt.image_l = slMat2cvMat(image_zed_left);  //格式转换
+
+                    // 删去最后一个不需要的通道
+                    cv::cvtColor(kpt.image_l, kpt.image_l, cv::COLOR_BGRA2BGR);
+                    cv::cvtColor(kpt.image_r, kpt.image_r, cv::COLOR_BGRA2BGR);
+                    kpt.image_r.convertTo(kpt.image_r, CV_8U);
+                    kpt.image_l.convertTo(kpt.image_l, CV_8U);
+                    assert(kpt.image_r.channels() == 3 && kpt.image_l.channels() == 3);
+
+                    KeypointTrack::mouse_image_r = kpt.image_r.clone();
+                    KeypointTrack::mouse_image_l = kpt.image_l.clone();
+                    if(KeypointTrack::get_rois_l && KeypointTrack::get_rois_r)
+                    {
+                        if (first_frame)
+                        {
+                            cv::imwrite("firstFrameR.png", kpt.image_r);
+                            cv::imwrite("firstFrameL.png", kpt.image_l);
+                            for (int i = 0; i < 2; i++)
+                            {
+                                if (i == 0)
+                                    kpt.image = kpt.image_r;
+                                else
+                                    kpt.image = kpt.image_l;
+                                kpt.fistFrameprocess(i);
+                            }
+                            first_frame = false;
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 2; i++)
+                            {
+                                if (i == 0)
+                                    kpt.image = kpt.image_r;
+                                else
+                                    kpt.image = kpt.image_l;
+                                kpt.frameProcessing(i);
+                            }
+                        }
+                        for (int i = 0; i < 3; i++)
+                        {
+                            for (int k = 0; k < 2; k++)
+                            {
+                                dataProcess.keyPoints[k][i] = kpt.keyPoints[k][i];
+                            }
+                        }
+                        dataProcess.process();
+                    }
+                    cv::imshow("RIGHT", kpt.image_r);
+                    cv::imwrite("right.jpg", kpt.image_r);
+                    cv::imshow("LEFT", kpt.image_l);
+                    char key = cv::waitKey(1);
+                    if (key == 'q')
+                    {
+                        tracking_state = false;
+                    }
+                }
+            }
+    }
 	zed.close();
 	return 0;
 }
