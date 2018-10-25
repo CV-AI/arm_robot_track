@@ -21,7 +21,7 @@ public:
 	cv::Point2d keyPoints[2][3];
 
 	cv::Rect2d tracker_rect[2][3];
-	cv::Mat roi_image[3];
+	cv::Mat roi_image[2][3];
 	cv::Ptr<cv::Tracker> tracker[2][3];
 
 	// variables used in Mouse Call back

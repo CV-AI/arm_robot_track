@@ -12,11 +12,11 @@ class DataProcess
 {
 private:
 	const double pi = 3.1415926;
-	const float l = 33.5; // length of each block on the chessboard (millimeter)
+	const float l = 13.6; // length of each block on the chessboard (millimeter)
     const double cx = 652.1485214233398;
     const double cy = 394.0842399597168;
     const double f = 683.3077785416543;
-    const int T = 120;
+    const double T = 120.0;
 
 public:
 	DataProcess();
@@ -29,6 +29,7 @@ public:
 	cv::Mat camera_Matrix = cv::Mat (4, num_corners, CV_32F);
 	cv::Mat world_Matrix = cv::Mat (4, num_corners, CV_32F);
 	cv::Mat transfer_Matrix =cv::Mat (4, 4, CV_32F);
+	// matrix used in key point track
 	cv::Mat keypoints_camera_Matrix = cv::Mat(4, 3, CV_32F);
 	cv::Mat keypoints_world_Matrix = cv::Mat(4, 3, CV_32F);
 	std::vector<cv::Point2f> corners_r;
@@ -38,19 +39,19 @@ public:
     std::chrono::milliseconds time;
 
 	void getTime();
-    bool calculate_T_the_whole();
+    void calculate_T_the_whole();
 	bool find_camera_coordinates(cv::Mat &chessboard, cv::Size boardSize);
 	void mapTo3D();
-	bool prepareChessBoardMatrices();
+	void prepareChessBoardMatrices();
 	void mapChessBoardTo3D();
 	void test_transfer_matrix();
 	void process();
 	bool prepareMatrix();
 
 
-	cv::Point3d keyPoints_world[3];
-	cv::Point3d keyPoints3D[3];
-    cv::Point2d keyPoints[2][3];
+	cv::Point3f keyPoints_world[3];
+	cv::Point3f keyPoints3D[3];
+    cv::Point2f keyPoints[2][3];
 	cv::Mat image_r;
 	cv::Mat image_l;
 };
