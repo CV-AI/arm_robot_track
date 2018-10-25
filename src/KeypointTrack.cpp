@@ -35,7 +35,7 @@ void KeypointTrack::fistFrameprocess(int k)
 	for (int i = 0; i < 3; i++)
 	{
 		tracker_rect[k][i] = mouse_rect[k][i];
-		roi_image[i] = image(tracker_rect[k][i]);
+		roi_image[k][i] = image(tracker_rect[k][i]);
 		assert(tracker[k][i]->init(image, tracker_rect[k][i]));
 	}
 	findPoint(k);
@@ -60,7 +60,7 @@ void KeypointTrack::frameProcessing(int k)
 	for (int i = 0; i < 3; i++)
 	{
 		assert(tracker[k][i]->update(image, tracker_rect[k][i]));  // assertion fails when tracker cannot locate
-		roi_image[i] = image(tracker_rect[k][i]);
+		roi_image[k][i] = image(tracker_rect[k][i]);
 	}
 	findPoint(k);
 	for (int i = 0; i < 3; i++)
@@ -86,7 +86,7 @@ void KeypointTrack::findPoint(int k)
 
 	for (int i = 0; i < 3; i++)
 	{
-		gray_image = roi_image[i].clone();
+		gray_image = roi_image[k][i].clone();
 		std::vector<cv::Point> corners;
 
         cv::cvtColor(gray_image, gray_image, cv::COLOR_BGR2GRAY);

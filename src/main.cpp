@@ -104,20 +104,14 @@ int main()
             // prepare the world_matrix and camera-matrix
             dataProcess.prepareChessBoardMatrices();
             // use prepared matrices to calculate transfer matrix
+            //std::cout<<"world matrix 1"<<dataProcess.world_Matrix<<std::endl;
             dataProcess.calculate_T_the_whole();
+
             // write the calculate matrix to file
             assert(writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext"));
-            break;
-        case 'e':
-            // entering exam mode
-            // get chessboard corners, and mat them to 3D coordinate
-            dataProcess.mapChessBoardTo3D();
-            // prepare the world_matrix and camera-matrix
-            // there is no point to prepare world_matrix, but for the sake of simplicity, let's do it
-            dataProcess.prepareChessBoardMatrices();
 
             dataProcess.test_transfer_matrix();
-
+            break; // TODO: dellete break after program is complte
         case 't':
             // entering tracking mode
             KeypointTrack kpt;
@@ -156,9 +150,9 @@ int main()
                                 else
                                     kpt.image = kpt.image_r;
                                 kpt.fistFrameprocess(i);
-                                cv::imwrite("right.jpg", kpt.image_r);
-                                cv::imwrite("left.jpg", kpt.image_l);
                             }
+                            cv::imwrite("right.jpg", kpt.image_r);
+                            cv::imwrite("left.jpg", kpt.image_l);
                             first_frame = false;
                         }
                         else
