@@ -21,8 +21,6 @@ int main()
 	cv::namedWindow("LEFT");
 	cv::namedWindow("RIGHT");
 
-	// set to true when you try to find transfer_matrix
-	// set to false when you try to test transfer_matrix
 	// whether do tracking
 	bool tracking_state = true;
     bool finding_transfer_matrix = true;
@@ -30,7 +28,7 @@ int main()
     char mode;
 	InitParameters init_params;
 	init_params.camera_resolution = RESOLUTION_HD720;
-	init_params.camera_fps = 60;//֡��
+	init_params.camera_fps = 60;
     //init_params.svo_input_filename.set("/home/zack/Videos/big_board.svo");
 
 	ERROR_CODE err = zed.open(init_params);
@@ -92,11 +90,10 @@ int main()
                             }
                         }
                     }
-
                     found_chessboard_left = false;
                     cv::imshow("LEFT", dataProcess.image_l);
                     cv::imshow("RIGHT", dataProcess.image_r);
-
+                    cv::waitKey(1);
                 }
             }
             cv::imshow("LEFT", dataProcess.image_l);
