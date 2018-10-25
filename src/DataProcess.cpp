@@ -29,6 +29,7 @@ DataProcess::DataProcess()
     world_fout.open("world_data.txt");
     // start counting when the instance is created
     start_time = duration_cast< milliseconds >(system_clock::now().time_since_epoch());
+    num_corners = 9;
 }
 
 
@@ -49,26 +50,16 @@ void DataProcess::getTime() {
 // map coordinates in 2D to 3D
 void DataProcess::mapTo3D()
 {
-	const double cx = 652.1485214233398;
-	const double cy = 394.0842399597168;
-	const double f = 683.3077785416543;
-	const int T = 120;
-
-
     for(int i =0;i<3; i++)
     {
-        keyPoints3D[i].x=(2*keyPoints[0][i].x-cx)*T/(2*(keyPoints[0][i].x-keyPoints[1][i].x));
-        keyPoints3D[i].y= -(2 * keyPoints[0][i].y - cy)*T / (2 * (keyPoints[0][i].x - keyPoints[1][i].x));
-        keyPoints3D[i].z = f*T / (2 * (keyPoints[0][i].x - keyPoints[1][i].x));
+        keyPoints3D[i].x=(keyPoints[0][i].x-cx)*T/(keyPoints[0][i].x-keyPoints[1][i].x);
+        keyPoints3D[i].y= -(keyPoints[0][i].y - cy)*T / (keyPoints[0][i].x - keyPoints[1][i].x);
+        keyPoints3D[i].z = f*T / (keyPoints[0][i].x - keyPoints[1][i].x);
     }
 }
 
 void DataProcess::mapChessBoardTo3D() {
     printf("mapping");
-    const double cx = 652.1485214233398;
-    const double cy = 394.0842399597168;
-    const double f = 683.3077785416543;
-    const int T = 120;
     assert( corners_l.size() == num_corners);
     assert(corners_r.size() ==  num_corners);
     for(auto corner_id: util::lang::indices(corners_l))
@@ -76,11 +67,11 @@ void DataProcess::mapChessBoardTo3D() {
         printf(".");
 
         camera_coordinates[corner_id].x =
-                (2*corners_l[corner_id].x-cx)*T/(2*(corners_l[corner_id].x-corners_r[corner_id].x));
+                (corners_l[corner_id].x-cx)*T/(corners_l[corner_id].x-corners_r[corner_id].x);
         camera_coordinates[corner_id].y =
-                -(2 * corners_l[corner_id].y - cy)*T / (2 * (corners_l[corner_id].x - corners_r[corner_id].x));
+                -(corners_l[corner_id].y - cy)*T / (corners_l[corner_id].x - corners_r[corner_id].x);
         camera_coordinates[corner_id].z =
-                f*T / (2 * (corners_l[corner_id].x - corners_r[corner_id].x));
+                f*T / (corners_l[corner_id].x - corners_r[corner_id].x);
     }
     printf("\nmap ChessBoard corners succeed!\n");
 }
@@ -95,7 +86,7 @@ bool DataProcess::find_camera_coordinates(cv::Mat &chessboard, cv::Size boardSiz
 bool DataProcess::prepareChessBoardMatrices() {
     printf("Preparing matrices!\n");
     // left hand coordinate system, with x-axi points to bottom of the chessboard, origin-point at left-upper corner
-    float word_coordinate_data[num_corners * 4] =
+    float word_coordinate_data[] =
             {-rt*l/2, -rt*l/2, -rt*l/2,  0,  0,   0,   l,  l,    l,
                    0,       l,     2*l,  0,  l, 2*l,   0,  l,  2*l,
               rt*l/2,  rt*l/2,  rt*l/2,  0,  0,   0,   0,  0,    0,
@@ -225,6 +216,7 @@ bool DataProcess::prepareMatrix() {
     // move redundant row
     keypoints_world_Matrix = keypoints_world_Matrix(cv::Rect(0, 0, 3, 3));
     assert(keypoints_world_Matrix.size() == cv::Size(3, 3));
+    std::cout<<keypoints_world_Matrix<<std::endl;
     for(int i = 0;i<3; i++)
     {
         keyPoints_world[i] = cv::Point3d(keypoints_world_Matrix.col(i));

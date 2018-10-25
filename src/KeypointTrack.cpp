@@ -132,8 +132,8 @@ void KeypointTrack::onMouseLeft(int event, int x, int y, int flags, void *param)
             break;
         case EVENT_LBUTTONUP:
 
-            mouse_rect[0][rect_id_l].x = MIN(x, cursor.x);
-            mouse_rect[0][rect_id_l].y = MIN(y, cursor.y);
+            mouse_rect[0][rect_id_l].x = cursor.x;
+            mouse_rect[0][rect_id_l].y = cursor.y;
             mouse_rect[0][rect_id_l].width = abs(x - cursor.x);
             mouse_rect[0][rect_id_l].height = abs(y - cursor.y);
             if(rect_id_l==2)
