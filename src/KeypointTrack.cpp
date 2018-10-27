@@ -92,33 +92,9 @@ void KeypointTrack::findPoint(int k)
         cv::cvtColor(gray_image, gray_image, cv::COLOR_BGR2GRAY);
         // InputArray image, OutputArray corners, int maxCorners, double qualityLevel, double minDistance
         cv::goodFeaturesToTrack(gray_image, corners, 1, 0.01, 4);
-//        cv::Point mean;
-//
-//        for(auto i: util::lang::indices(corners))
-//        {
-//            mean += corners[i];
-//        }
-//        mean = mean/float(corners.size());
-//        double distance_pre;
-//        cv::Point temp = corners[0];
-//        distance_pre = sqrt(pow(corners[0].x, 2)+pow(corners[0].y, 2));
-//        for(auto i: util::lang::indices(corners))
-//        {
-//            if(0<i)
-//            {
-//
-//                double distance = sqrt(pow(corners[i].x, 2)+pow(corners[i].y, 2));
-//                if(distance<distance_pre)
-//                {
-//                    temp = corners[i];
-//                }
-//            }
-//        }
         // set to the corner in center
 		keyPoints[k][i].x = corners[0].x;
 		keyPoints[k][i].y = corners[0].y;
-
-		circle(image, keyPoints[k][i], 2, Scalar(0, 0, 0), 2);
 	}
 }
 
