@@ -55,6 +55,10 @@ void DataProcess::mapTo3D()
         keyPoints3D[i].x=(keyPoints[0][i].x-cx)*T/(keyPoints[0][i].x-keyPoints[1][i].x);
         keyPoints3D[i].y= -(keyPoints[0][i].y - cy)*T / (keyPoints[0][i].x - keyPoints[1][i].x);
         keyPoints3D[i].z = f*T / (keyPoints[0][i].x - keyPoints[1][i].x);
+//        keyPoints3D[i].x = -T*(xl + xr -2*cx)/(2*(xl - xr));
+//        keyPoints3D[i].y = T*(y-cy)/(xl -xr);
+//        keyPoints3D[i].z = f*T/(xl-xr);
+        //std::cout<<"disparity"<<i<< ": "<<xl - xr<<std::endl;
     }
 }
 
@@ -64,7 +68,6 @@ void DataProcess::mapChessBoardTo3D() {
     assert(corners_r.size() ==  num_corners);
     for(auto corner_id: util::lang::indices(corners_l))
     {
-        printf(".");
 
         camera_coordinates[corner_id].x =
                 (corners_l[corner_id].x-cx)*T/(corners_l[corner_id].x-corners_r[corner_id].x);
@@ -129,7 +132,7 @@ void DataProcess::calculate_T_the_whole() {
     world_Matrix_T  = temp.t();
     camera_Matrix_T = camera_Matrix.t();
 
-    cv::solve(camera_Matrix_T, world_Matrix_T, transfer_Matrix, cv::DECOMP_NORMAL);
+    assert(cv::solve(camera_Matrix_T, world_Matrix_T, transfer_Matrix, cv::DECOMP_NORMAL));
     cv::transpose(transfer_Matrix, transfer_Matrix);
     printf("calculate transfer matrix succeed!\n");
     // NOTE: you need to return something if the function return type is not void
@@ -196,13 +199,16 @@ bool DataProcess::prepareMatrix() {
     temp.push_back(last_element);
     temp.copyTo(keypoints_camera_Matrix);
     assert(keypoints_camera_Matrix.size() == cv::Size(3, 4));
-    std::cout<<keypoints_camera_Matrix<<std::endl;
+    std::cout<<"camera_matrix\n"<<keypoints_camera_Matrix<<std::endl;
     // prepare world matrix
     keypoints_world_Matrix = transfer_Matrix*keypoints_camera_Matrix;
     // move redundant row
     temp = keypoints_world_Matrix(cv::Rect(0, 0, 3, 3));
     assert(temp.size() == cv::Size(3, 3));
-    std::cout<<keypoints_world_Matrix<<std::endl;
+    std::cout<<"transfer matrix\n"<<transfer_Matrix<<std::endl;
+    std::cout<<"world_matrix\n"<<keypoints_world_Matrix<<std::endl;
+
+
     for(int i = 0;i<3; i++)
     {
         keyPoints_world[i] = cv::Point3d(temp.col(i));

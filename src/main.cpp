@@ -38,7 +38,14 @@ int main()
 		zed.close();
 		return 1; 
 	}
-	// Prepare new image size to retrieve half-resolution images
+
+    CalibrationParameters calibrationParameters = zed.getCameraInformation().calibration_parameters;
+    CameraParameters left_camera = calibrationParameters.left_cam;
+    CameraParameters right_camera = calibrationParameters.right_cam;
+    std::cout<<"T: "<<calibrationParameters.T<<std::endl;
+    std::cout<<"left fx="<<left_camera.fx<<" fy="<<left_camera.fy<<" cx="<<left_camera.cx<<" cy="<<left_camera.cy<<std::endl;
+    std::cout<<"right fx="<<right_camera.fx<<" fy="<<right_camera.fy<<" cx="<<right_camera.cx<<" cy="<<right_camera.cy<<std::endl;
+    // Prepare new image size to retrieve half-resolution images
 	Resolution image_size = zed.getResolution();
 	int new_width = int(image_size.width);
 	int new_height = int(image_size.height);
