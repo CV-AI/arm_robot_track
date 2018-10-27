@@ -27,8 +27,8 @@ int main()
     bool found_chessboard_left = false;
     char mode;
 	InitParameters init_params;
-	init_params.camera_resolution = RESOLUTION_HD720;
-	init_params.camera_fps = 60;
+	init_params.camera_resolution = RESOLUTION_HD2K;
+	init_params.camera_fps = 15;
     //init_params.svo_input_filename.set("/home/zack/Videos/big_board.svo");
 
 	ERROR_CODE err = zed.open(init_params);
