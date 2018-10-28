@@ -18,6 +18,7 @@ private:
     const double f = 1390.04;
     const double T = 119.981;
 
+
 public:
 	DataProcess();
 	~DataProcess();
@@ -47,7 +48,7 @@ public:
 	void test_transfer_matrix();
 	void process();
 	bool prepareMatrix();
-    void sortChessBoardCorners();
+
 
 	cv::Point3f keyPoints_world[3];
 	cv::Point3f keyPoints3D[3];

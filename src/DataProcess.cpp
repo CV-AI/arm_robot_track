@@ -77,7 +77,7 @@ void DataProcess::mapChessBoardTo3D() {
                 -(corners_l[corner_id].y - cy)*T / (corners_l[corner_id].x - corners_r[corner_id].x);
         camera_coordinates[corner_id].z =
                 f*T / (corners_l[corner_id].x - corners_r[corner_id].x);
-        std::cout<<"left"<<corner_id<<": "<<corners_l[corner_id]<<std::endl;
+        //std::cout<<"left"<<corner_id<<": "<<corners_l[corner_id]<<std::endl;
     }
     printf("\nmap ChessBoard corners succeed!\n");
 }
@@ -86,13 +86,14 @@ void DataProcess::mapChessBoardTo3D() {
 bool DataProcess::find_camera_coordinates(cv::Mat &chessboard, cv::Size boardSize) {
     bool found = cv::findChessboardCorners(chessboard, boardSize, imagecorners);
     cv::drawChessboardCorners(chessboard, boardSize, imagecorners, found);
-//    std::cout<<"corners"<<std::endl;
-//    for(auto i: corners_l)
-//    {
-//        std::cout<<i<<std::endl;
-//    }
+
     // needs to be reversed, original imagecorners are sorted from down-right to top-left
     std::reverse(imagecorners.begin(), imagecorners.end());
+    std::cout<<"corners"<<std::endl;
+    for(auto i: imagecorners)
+    {
+        std::cout<<i<<std::endl;
+    }
     return found;
 }
 
@@ -228,13 +229,9 @@ bool DataProcess::prepareMatrix() {
     return true;
 }
 
-void DataProcess::sortChessBoardCorners() {
-    std::vector<cv::Point2f> sorted_corners;
-    for(auto i: util::lang::indices(corners_l))
-    {
-        ;
-    }
-}
+
+
+
 
 
 
