@@ -118,7 +118,7 @@ int main()
             assert(writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext"));
 
             dataProcess.test_transfer_matrix();
-            break; // TODO: dellete break after program is complte
+            break; // TODO: delete break after program is complte
         case 't':
             // entering tracking mode
             KeypointTrack kpt;
