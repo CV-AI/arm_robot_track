@@ -52,9 +52,11 @@ void DataProcess::mapTo3D()
 {
     for(int i =0;i<3; i++)
     {
-        keyPoints3D[i].x=(keyPoints[0][i].x-cx)*T/(keyPoints[0][i].x-keyPoints[1][i].x);
-        keyPoints3D[i].y= -(keyPoints[0][i].y - cy)*T / (keyPoints[0][i].x - keyPoints[1][i].x);
-        keyPoints3D[i].z = f*T / (keyPoints[0][i].x - keyPoints[1][i].x);
+        keyPoints3D[i].x = float((keyPoints[0][i].x-cx)*T/(keyPoints[0][i].x-keyPoints[1][i].x));
+        keyPoints3D[i].y = float(-(keyPoints[0][i].y - cy)*T / (keyPoints[0][i].x - keyPoints[1][i].x));
+        keyPoints3D[i].z = float(f*T / (keyPoints[0][i].x - keyPoints[1][i].x));
+        std::cout<<"left"<<i<<": "<<keyPoints[0][i]<<std::endl;
+        std::cout<<"keyPoints3d"<<i<<": "<<keyPoints3D[i]<<std::endl;
 //        keyPoints3D[i].x = -T*(xl + xr -2*cx)/(2*(xl - xr));
 //        keyPoints3D[i].y = T*(y-cy)/(xl -xr);
 //        keyPoints3D[i].z = f*T/(xl-xr);
@@ -75,6 +77,7 @@ void DataProcess::mapChessBoardTo3D() {
                 -(corners_l[corner_id].y - cy)*T / (corners_l[corner_id].x - corners_r[corner_id].x);
         camera_coordinates[corner_id].z =
                 f*T / (corners_l[corner_id].x - corners_r[corner_id].x);
+        std::cout<<"left"<<corner_id<<": "<<corners_l[corner_id]<<std::endl;
     }
     printf("\nmap ChessBoard corners succeed!\n");
 }
@@ -83,6 +86,13 @@ void DataProcess::mapChessBoardTo3D() {
 bool DataProcess::find_camera_coordinates(cv::Mat &chessboard, cv::Size boardSize) {
     bool found = cv::findChessboardCorners(chessboard, boardSize, imagecorners);
     cv::drawChessboardCorners(chessboard, boardSize, imagecorners, found);
+//    std::cout<<"corners"<<std::endl;
+//    for(auto i: corners_l)
+//    {
+//        std::cout<<i<<std::endl;
+//    }
+    // needs to be reversed, original imagecorners are sorted from down-right to top-left
+    std::reverse(imagecorners.begin(), imagecorners.end());
     return found;
 }
 
@@ -122,10 +132,10 @@ void DataProcess::prepareChessBoardMatrices() {
 
 void DataProcess::calculate_T_the_whole() {
     // see opencv doc at cv::DecompTypes
-    // use temporary Mat or transpose() will  not work on world_Matrix (magic)
+    // use temporary Mat, otherwise transpose() will  not work on world_Matrix (magic)
     cv::Mat temp;
     world_Matrix.copyTo(temp);
-    std::cout<<"world matrix 2"<<world_Matrix<<std::endl;
+    //std::cout<<"world matrix 2"<<world_Matrix<<std::endl;
     std::cout<<"temp"<<temp<<std::endl;
     cv::Mat camera_Matrix_T = cv::Mat(num_corners, 4, CV_32F);
     cv::Mat world_Matrix_T = cv::Mat(num_corners, 4, CV_32F);
@@ -134,6 +144,8 @@ void DataProcess::calculate_T_the_whole() {
 
     assert(cv::solve(camera_Matrix_T, world_Matrix_T, transfer_Matrix, cv::DECOMP_NORMAL));
     cv::transpose(transfer_Matrix, transfer_Matrix);
+    std::cout<<"camera matrix"<<camera_Matrix<<std::endl;
+    std::cout<<"transfer matrix\n"<<transfer_Matrix<<std::endl;
     printf("calculate transfer matrix succeed!\n");
     // NOTE: you need to return something if the function return type is not void
 }
@@ -214,6 +226,14 @@ bool DataProcess::prepareMatrix() {
         keyPoints_world[i] = cv::Point3d(temp.col(i));
     }
     return true;
+}
+
+void DataProcess::sortChessBoardCorners() {
+    std::vector<cv::Point2f> sorted_corners;
+    for(auto i: util::lang::indices(corners_l))
+    {
+        ;
+    }
 }
 
 
