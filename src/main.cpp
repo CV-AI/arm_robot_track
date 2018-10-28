@@ -27,8 +27,8 @@ int main()
     bool found_chessboard_left = false;
     char mode;
 	InitParameters init_params;
-	init_params.camera_resolution = RESOLUTION_HD720;
-	init_params.camera_fps = 60;
+	init_params.camera_resolution = RESOLUTION_HD2K;
+	init_params.camera_fps = 15;
     //init_params.svo_input_filename.set("/home/zack/Videos/big_board.svo");
 
 	ERROR_CODE err = zed.open(init_params);
@@ -38,7 +38,14 @@ int main()
 		zed.close();
 		return 1; 
 	}
-	// Prepare new image size to retrieve half-resolution images
+
+    CalibrationParameters calibrationParameters = zed.getCameraInformation().calibration_parameters;
+    CameraParameters left_camera = calibrationParameters.left_cam;
+    CameraParameters right_camera = calibrationParameters.right_cam;
+    std::cout<<"T: "<<calibrationParameters.T<<std::endl;
+    std::cout<<"left fx="<<left_camera.fx<<" fy="<<left_camera.fy<<" cx="<<left_camera.cx<<" cy="<<left_camera.cy<<std::endl;
+    std::cout<<"right fx="<<right_camera.fx<<" fy="<<right_camera.fy<<" cx="<<right_camera.cx<<" cy="<<right_camera.cy<<std::endl;
+    // Prepare new image size to retrieve half-resolution images
 	Resolution image_size = zed.getResolution();
 	int new_width = int(image_size.width);
 	int new_height = int(image_size.height);
@@ -111,7 +118,7 @@ int main()
             assert(writeMatToFile(dataProcess.transfer_Matrix, "transfer_matrix.ext"));
 
             dataProcess.test_transfer_matrix();
-            break; // TODO: dellete break after program is complte
+            break; // TODO: delete break after program is complte
         case 't':
             // entering tracking mode
             KeypointTrack kpt;

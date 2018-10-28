@@ -59,10 +59,10 @@ void KeypointTrack::frameProcessing(int k)
 	//cout << endl << "The current frame is: " << num_frame << endl;
 	for (int i = 0; i < 3; i++)
 	{
-		assert(tracker[k][i]->update(image, tracker_rect[k][i]));  // assertion fails when tracker cannot locate
+		tracker[k][i]->update(image, tracker_rect[k][i]);  // assertion fails when tracker cannot locate
 		roi_image[k][i] = image(tracker_rect[k][i]);
 	}
-	findPoint(k);
+	find_harriscorners(k);
 	for (int i = 0; i < 3; i++)
 	{
 		// add relative coordinate
@@ -92,36 +92,45 @@ void KeypointTrack::findPoint(int k)
         cv::cvtColor(gray_image, gray_image, cv::COLOR_BGR2GRAY);
         // InputArray image, OutputArray corners, int maxCorners, double qualityLevel, double minDistance
         cv::goodFeaturesToTrack(gray_image, corners, 1, 0.01, 4);
-//        cv::Point mean;
-//
-//        for(auto i: util::lang::indices(corners))
-//        {
-//            mean += corners[i];
-//        }
-//        mean = mean/float(corners.size());
-//        double distance_pre;
-//        cv::Point temp = corners[0];
-//        distance_pre = sqrt(pow(corners[0].x, 2)+pow(corners[0].y, 2));
-//        for(auto i: util::lang::indices(corners))
-//        {
-//            if(0<i)
-//            {
-//
-//                double distance = sqrt(pow(corners[i].x, 2)+pow(corners[i].y, 2));
-//                if(distance<distance_pre)
-//                {
-//                    temp = corners[i];
-//                }
-//            }
-//        }
         // set to the corner in center
 		keyPoints[k][i].x = corners[0].x;
 		keyPoints[k][i].y = corners[0].y;
-
-		circle(image, keyPoints[k][i], 2, Scalar(0, 0, 0), 2);
 	}
 }
 
+void KeypointTrack::find_harriscorners(int k) {
+
+    cv::Mat gray_image;
+    cv::Mat dst_norm, dst_norm_scaled;
+    for (int i = 0; i < 3; i++)
+    {
+        gray_image = roi_image[k][i].clone();
+        cv::Point sum;
+        int num_corners = 0;
+        cv::cvtColor(gray_image, gray_image, COLOR_BGR2GRAY);
+        cv::Mat dst = cv::Mat::zeros( gray_image.size(), CV_32FC1 );
+        cornerHarris( gray_image, dst, blockSize, apertureSize, k );
+        normalize( dst, dst_norm, 0, 255, cv::NORM_MINMAX, CV_32FC1, cv::Mat());
+        convertScaleAbs( dst_norm, dst_norm_scaled );
+        for( int i = 0; i < dst_norm.rows ; i++ )
+        {
+            for( int j = 0; j < dst_norm.cols; j++ )
+            {
+                if( (int) dst_norm.at<float>(i,j) > harris_corner_thresh)
+                {
+                    sum += Point(j,i);
+                    num_corners += 1;
+                }
+            }
+        }
+        sum = sum/num_corners;
+        // InputArray image, OutputArray corners, int maxCorners, double qualityLevel, double minDistance
+        keyPoints[k][i].x = sum.x;
+        keyPoints[k][i].y = sum.y;
+    }
+
+
+}
 void KeypointTrack::onMouseLeft(int event, int x, int y, int flags, void *param) {
     static cv::Point cursor;
     switch (event)

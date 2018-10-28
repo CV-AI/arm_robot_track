@@ -3,7 +3,7 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include <range.h>
-
+#include <algorithm>
 
 bool writeMatToFile(cv::Mat& m, const char* filename);
 bool readMatFromFile(cv::Mat& m, const char* filename);
@@ -13,10 +13,11 @@ class DataProcess
 private:
 	const double pi = 3.1415926;
 	const float l = 13.6; // length of each block on the chessboard (millimeter)
-    const double cx = 652.1485214233398;
-    const double cy = 394.0842399597168;
-    const double f = 683.3077785416543;
-    const double T = 120.0;
+    const double cx = 1133.39;
+    const double cy = 687.311;
+    const double f = 1390.04;
+    const double T = 119.981;
+
 
 public:
 	DataProcess();

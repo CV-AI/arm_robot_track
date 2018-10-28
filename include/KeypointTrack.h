@@ -6,12 +6,18 @@
 
 class KeypointTrack
 {
+    // parameters for harris corner detection
+    const int harris_corner_thresh = 200;
+    int blockSize = 2;
+    int apertureSize = 3;
+    double k = 0.04;
 public:
 	KeypointTrack();
 	~KeypointTrack();
 	void fistFrameprocess(int k);
 	void frameProcessing(int k);
 	void findPoint(int k);
+	void find_harriscorners(int k);
     static void onMouseLeft(int event, int x, int y, int flags, void *param);
     static void onMouseRight(int event, int x, int y, int flags, void *param);
 	cv::Mat image;
