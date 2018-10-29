@@ -83,10 +83,27 @@ void DataProcess::mapChessBoardTo3D() {
 }
 
 
-bool DataProcess::find_camera_coordinates(cv::Mat &chessboard, cv::Size boardSize) {
-    bool found = cv::findChessboardCorners(chessboard, boardSize, imagecorners);
+bool DataProcess::find_camera_coordinates(int num, cv::Mat &chessboard, cv::Size boardSize) {
+    cv::Mat cb_roi;
+    cv::Rect cb_rect;
+    if(num == 0)
+    {
+        cb_roi = chessboard(mouse_rect_left);
+        cb_rect = mouse_rect_left;
+    }
+    else
+    {
+        cb_roi = chessboard(mouse_rect_right);
+        cb_rect = mouse_rect_right;
+    }
+    bool found = cv::findChessboardCorners(cb_roi, boardSize, imagecorners);
+    //cv::drawChessboardCorners(chessboard, boardSize, imagecorners, found);
+    for(auto i:util::lang::indices(imagecorners))
+    {
+        imagecorners[i].x += cb_rect.x;
+        imagecorners[i].y += cb_rect.y;
+    }
     cv::drawChessboardCorners(chessboard, boardSize, imagecorners, found);
-
     // needs to be reversed, original imagecorners are sorted from down-right to top-left
     std::reverse(imagecorners.begin(), imagecorners.end());
     std::cout<<"corners"<<std::endl;
@@ -100,11 +117,18 @@ bool DataProcess::find_camera_coordinates(cv::Mat &chessboard, cv::Size boardSiz
 void DataProcess::prepareChessBoardMatrices() {
     printf("Preparing matrices!\n");
     // left hand coordinate system, with x-axi points to bottom of the chessboard, origin-point at left-upper corner
+    // parameters when lines are drew vertically
+//    float world_coordinate_data[] =
+//            {-rt*l/2, -rt*l/2, -rt*l/2,  0,  0,   0,   l,  l,    l,
+//                   0,       l,     2*l,  0,  l, 2*l,   0,  l,  2*l,
+//              rt*l/2,  rt*l/2,  rt*l/2,  0,  0,   0,   0,  0,    0,
+//                   1,       1,       1,  1,  1,   1,   1,  1,    1};
+    // parameters when lines are drew horizontally
     float world_coordinate_data[] =
-            {-rt*l/2, -rt*l/2, -rt*l/2,  0,  0,   0,   l,  l,    l,
-                   0,       l,     2*l,  0,  l, 2*l,   0,  l,  2*l,
-              rt*l/2,  rt*l/2,  rt*l/2,  0,  0,   0,   0,  0,    0,
-                   1,       1,       1,  1,  1,   1,   1,  1,    1};
+            {l,   0, -rt*l/2,  l,   0, -rt*l/2,   l,   0, -rt*l/2,
+             0,   0,       0,  l,   l,       l, 2*l, 2*l,     2*l,
+             0,   0,  rt*l/2,  0,   0,  rt*l/2,   0,   0,  rt*l/2,
+             1,   1,       1,  1,   1,       1,   1,   1,      1};
     world_Matrix = cv::Mat(4, num_corners, CV_32F, world_coordinate_data);
     // needs to convertTo CV_32F by hand
     world_Matrix.convertTo(world_Matrix, CV_32F);
@@ -229,8 +253,44 @@ bool DataProcess::prepareMatrix() {
     return true;
 }
 
+void DataProcess::onMouseLeft(int event, int x, int y, int flags, void *param) {
+    static cv::Point cursor;
+    switch (event)
+    {
 
+        case cv::EVENT_LBUTTONDOWN:
+            cursor = cv::Point(x, y);
+            break;
+        case cv::EVENT_LBUTTONUP:
+            mouse_rect_left.x = cursor.x;
+            mouse_rect_left.y = cursor.y;
+            mouse_rect_left.width = abs(x - cursor.x);
+            mouse_rect_left.height = abs(y - cursor.y);
+            get_chessboard_roi_left = true;
+    }
+}
 
+void DataProcess::onMouseRight(int event, int x, int y, int flags, void *param) {
+    static cv::Point cursor;
+    switch (event)
+    {
+
+        case cv::EVENT_LBUTTONDOWN:
+            cursor = cv::Point(x, y);
+            break;
+        case cv::EVENT_LBUTTONUP:
+            mouse_rect_right.x = cursor.x;
+            mouse_rect_right.y = cursor.y;
+            mouse_rect_right.width = abs(x - cursor.x);
+            mouse_rect_right.height = abs(y - cursor.y);
+            get_chessboard_roi_right = true;
+    }
+}
+
+bool DataProcess::get_chessboard_roi_left = false;
+bool DataProcess::get_chessboard_roi_right = false;
+cv::Rect DataProcess::mouse_rect_right = cv::Rect(0, 0, 4, 4);
+cv::Rect DataProcess::mouse_rect_left = cv::Rect(0, 0, 4, 4);
 
 
 
