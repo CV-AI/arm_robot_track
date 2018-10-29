@@ -11,15 +11,6 @@ using namespace std;
 
 KeypointTrack::KeypointTrack()
 {
-	// 创建跟踪器
-	for (int i = 0; i < 3; i++)
-	{
-		for (int k = 0; k < 2; k++)
-		{
-			Ptr<Tracker> track = TrackerBoosting::create();
-			tracker[k][i] = track;
-		}
-	}
 }
 
 
@@ -36,7 +27,6 @@ void KeypointTrack::fistFrameprocess(int k)
 	{
 		tracker_rect[k][i] = mouse_rect[k][i];
 		roi_image[k][i] = image(tracker_rect[k][i]);
-		assert(tracker[k][i]->init(image, tracker_rect[k][i]));
 	}
 	//findPoint(k);
 	find_chessboard_center(k);
@@ -60,7 +50,9 @@ void KeypointTrack::frameProcessing(int k)
 	//cout << endl << "The current frame is: " << num_frame << endl;
 	for (int i = 0; i < 3; i++)
 	{
-		tracker[k][i]->update(image, tracker_rect[k][i]);  // assertion fails when tracker cannot locate
+	    cv::Point center = keyPoints[k][i];
+		tracker_rect[k][i].x = center.x - tracker_rect[k][i].width/2;
+		tracker_rect[k][i].y = center.y - tracker_rect[k][i].height/2;
 		roi_image[k][i] = image(tracker_rect[k][i]);
 	}
 	//find_harriscorners(k);
