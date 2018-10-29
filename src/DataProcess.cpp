@@ -46,6 +46,7 @@ void DataProcess::getTime() {
     std::cout << "time:  " << time.count() << "  " << std::endl;
     // time in milliseconds
     camera_fout << time.count() << "  " ;
+    world_fout<<time.count()<<"  ";
 }
 // map coordinates in 2D to 3D
 void DataProcess::mapTo3D()
