@@ -204,9 +204,9 @@ void DataProcess::process() {
     // camera coordinates
     camera_fout << a << "   ";
     camera_fout << b << "   ";
-    camera_fout << keyPoints3D[0].x << "   " << keyPoints3D[0].y << "   " << keyPoints3D[0].z << "   " ;
-    camera_fout << keyPoints3D[1].x << "   " << keyPoints3D[1].y << "   " << keyPoints3D[1].z << "   " ;
-    camera_fout << keyPoints3D[2].x << "   " << keyPoints3D[2].y << "   " << keyPoints3D[2].z << "   " ;
+    camera_fout << keyPoints3D[0].x << ",   " << keyPoints3D[0].y << ",   " << keyPoints3D[0].z << ",   " ;
+    camera_fout << keyPoints3D[1].x << ",   " << keyPoints3D[1].y << ",   " << keyPoints3D[1].z << ",   " ;
+    camera_fout << keyPoints3D[2].x << ",   " << keyPoints3D[2].y << ",   " << keyPoints3D[2].z << ",   " ;
     camera_fout << angle << std::endl << std::endl;
 
     // world coordinates
@@ -219,9 +219,9 @@ void DataProcess::process() {
 
     world_fout << a << "   ";
     world_fout << b << "   ";
-    world_fout << keyPoints_world[0].x << "   " << keyPoints_world[0].y << "   " << keyPoints_world[0].z << "   " ;
-    world_fout << keyPoints_world[1].x << "   " << keyPoints_world[1].y << "   " << keyPoints_world[1].z << "   " ;
-    world_fout << keyPoints_world[2].x << "   " << keyPoints_world[2].y << "   " << keyPoints_world[2].z << "   " ;
+    world_fout << keyPoints_world[0].x << ",   " << keyPoints_world[0].y << ",   " << keyPoints_world[0].z << "   " ;
+    world_fout << keyPoints_world[1].x << ",   " << keyPoints_world[1].y << ",   " << keyPoints_world[1].z << "   " ;
+    world_fout << keyPoints_world[2].x << ",   " << keyPoints_world[2].y << ",   " << keyPoints_world[2].z << "   " ;
     world_fout << angle << std::endl << std::endl;
 
 }
