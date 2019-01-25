@@ -1,5 +1,7 @@
 
 #include <DataProcess.h>
+#include <chrono>
+
 using namespace std::chrono; // something about time
 bool writeMatToFile(cv::Mat& m, const char* filename)
 {
@@ -118,18 +120,18 @@ bool DataProcess::find_camera_coordinates(int num, cv::Mat &chessboard, cv::Size
 void DataProcess::prepareChessBoardMatrices() {
     printf("Preparing matrices!\n");
     // left hand coordinate system, with x-axi points to bottom of the chessboard, origin-point at left-upper corner
-    // parameters when lines are drew vertically
-//    float world_coordinate_data[] =
-//            {-rt*l/2, -rt*l/2, -rt*l/2,  0,  0,   0,   l,  l,    l,
-//                   0,       l,     2*l,  0,  l, 2*l,   0,  l,  2*l,
-//              rt*l/2,  rt*l/2,  rt*l/2,  0,  0,   0,   0,  0,    0,
-//                   1,       1,       1,  1,  1,   1,   1,  1,    1};
     // parameters when lines are drew horizontally
     float world_coordinate_data[] =
-            {l,   0, -rt*l/2,  l,   0, -rt*l/2,   l,   0, -rt*l/2,
-             0,   0,       0,  l,   l,       l, 2*l, 2*l,     2*l,
-             0,   0,  rt*l/2,  0,   0,  rt*l/2,   0,   0,  rt*l/2,
-             1,   1,       1,  1,   1,       1,   1,   1,      1};
+            {-rt*l/2, -rt*l/2, -rt*l/2,  0,  0,   0,   l,  l,    l,
+                   0,       l,     2*l,  0,  l, 2*l,   0,  l,  2*l,
+              rt*l/2,  rt*l/2,  rt*l/2,  0,  0,   0,   0,  0,    0,
+                   1,       1,       1,  1,  1,   1,   1,  1,    1};
+    // parameters when lines are drew vertically
+//    float world_coordinate_data[] =
+//            {l,   0, -rt*l/2,  l,   0, -rt*l/2,   l,   0, -rt*l/2,
+//             0,   0,       0,  l,   l,       l, 2*l, 2*l,     2*l,
+//             0,   0,  rt*l/2,  0,   0,  rt*l/2,   0,   0,  rt*l/2,
+//             1,   1,       1,  1,   1,       1,   1,   1,      1};
     world_Matrix = cv::Mat(4, num_corners, CV_32F, world_coordinate_data);
     // needs to convertTo CV_32F by hand
     world_Matrix.convertTo(world_Matrix, CV_32F);
