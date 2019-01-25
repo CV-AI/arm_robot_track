@@ -4,6 +4,7 @@
 #include <vector>
 #include <range.h>
 #include <algorithm>
+#include <chrono>
 
 bool writeMatToFile(cv::Mat& m, const char* filename);
 bool readMatFromFile(cv::Mat& m, const char* filename);
@@ -12,7 +13,7 @@ class DataProcess
 {
 private:
 	const double pi = 3.1415926;
-	const float l = 13.6; // length of each block on the chessboard (millimeter)
+	const float l = 33.5; // length of each block on the chessboard (millimeter)
     const double cx = 1133.39;
     const double cy = 687.311;
     const double f = 1390.04;
