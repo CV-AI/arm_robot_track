@@ -11,15 +11,6 @@ using namespace std;
 
 KeypointTrack::KeypointTrack()
 {
-	// 创建跟踪器
-	for (int i = 0; i < 3; i++)
-	{
-		for (int k = 0; k < 2; k++)
-		{
-			Ptr<Tracker> track = TrackerKCF::create();
-			tracker[k][i] = track;
-		}
-	}
 }
 
 
@@ -36,9 +27,9 @@ void KeypointTrack::fistFrameprocess(int k)
 	{
 		tracker_rect[k][i] = mouse_rect[k][i];
 		roi_image[k][i] = image(tracker_rect[k][i]);
-		assert(tracker[k][i]->init(image, tracker_rect[k][i]));
 	}
-	findPoint(k);
+	//findPoint(k);
+	find_chessboard_center(k);
 	for (int i = 0; i < 3; i++)
 	{
 		// add relative coordinate
@@ -59,10 +50,13 @@ void KeypointTrack::frameProcessing(int k)
 	//cout << endl << "The current frame is: " << num_frame << endl;
 	for (int i = 0; i < 3; i++)
 	{
-		tracker[k][i]->update(image, tracker_rect[k][i]);  // assertion fails when tracker cannot locate
+	    cv::Point center = keyPoints[k][i];
+		tracker_rect[k][i].x = center.x - tracker_rect[k][i].width/2;
+		tracker_rect[k][i].y = center.y - tracker_rect[k][i].height/2;
 		roi_image[k][i] = image(tracker_rect[k][i]);
 	}
-	find_harriscorners(k);
+	//find_harriscorners(k);
+	find_chessboard_center(k);
 	for (int i = 0; i < 3; i++)
 	{
 		// add relative coordinate
@@ -80,6 +74,7 @@ void KeypointTrack::frameProcessing(int k)
 
 
 // 获取标记的中心点
+// find the center of chessboard center;
 void KeypointTrack::findPoint(int k)
 {
 	cv::Mat gray_image;
@@ -128,8 +123,19 @@ void KeypointTrack::find_harriscorners(int k) {
         keyPoints[k][i].x = sum.x;
         keyPoints[k][i].y = sum.y;
     }
+}
+void KeypointTrack::find_chessboard_center(int k) {
+    cv::Mat gray_image;
+    cv::Mat dst_norm, dst_norm_scaled;
 
-
+    for (int i = 0; i < 3; i++)
+    {
+        gray_image = roi_image[k][i].clone();
+        cv::cvtColor(gray_image, gray_image, COLOR_BGR2GRAY);
+        bool found = cv::findChessboardCorners(gray_image, chessboard_size, chessboard_corners);
+        keyPoints[k][i].x = chessboard_corners[4].x;
+        keyPoints[k][i].y = chessboard_corners[4].y;
+    }
 }
 void KeypointTrack::onMouseLeft(int event, int x, int y, int flags, void *param) {
     static cv::Point cursor;
@@ -181,6 +187,8 @@ int KeypointTrack::rect_id_r = 0;
 int KeypointTrack::rect_id_l = 0;
 cv::Rect KeypointTrack::mouse_rect[2][3] = {{cv::Rect(0, 0, 4, 4), cv::Rect(0, 0, 4, 4), cv::Rect(0, 0, 4, 4)},
                                             {cv::Rect(0, 0, 4, 4), cv::Rect(0, 0, 4, 4), cv::Rect(0, 0, 4, 4)}};
+
+
 
 
 

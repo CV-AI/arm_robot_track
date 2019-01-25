@@ -4,6 +4,7 @@
 #include <vector>
 #include <range.h>
 #include <algorithm>
+#include <chrono>
 
 bool writeMatToFile(cv::Mat& m, const char* filename);
 bool readMatFromFile(cv::Mat& m, const char* filename);
@@ -12,7 +13,7 @@ class DataProcess
 {
 private:
 	const double pi = 3.1415926;
-	const float l = 13.6; // length of each block on the chessboard (millimeter)
+	const float l = 33.5; // length of each block on the chessboard (millimeter)
     const double cx = 1133.39;
     const double cy = 687.311;
     const double f = 1390.04;
@@ -41,14 +42,19 @@ public:
 
 	void getTime();
     void calculate_T_the_whole();
-	bool find_camera_coordinates(cv::Mat &chessboard, cv::Size boardSize);
+	bool find_camera_coordinates(int, cv::Mat &chessboard, cv::Size boardSize);
 	void mapTo3D();
 	void prepareChessBoardMatrices();
 	void mapChessBoardTo3D();
 	void test_transfer_matrix();
 	void process();
 	bool prepareMatrix();
-
+	static void onMouseLeft(int event, int x, int y, int flags, void *param);
+	static void onMouseRight(int event, int x, int y, int flags, void *param);
+	static bool get_chessboard_roi_left;
+	static bool get_chessboard_roi_right;
+	static cv::Rect mouse_rect_left;
+	static cv::Rect mouse_rect_right;
 
 	cv::Point3f keyPoints_world[3];
 	cv::Point3f keyPoints3D[3];

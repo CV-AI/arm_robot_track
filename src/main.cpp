@@ -18,8 +18,8 @@ int main()
 	cv::Size boardSize(3, 3); // size(width, height), so we need to initialize it with (cols, rows)
 	DataProcess dataProcess;
 
-	cv::namedWindow("LEFT");
-	cv::namedWindow("RIGHT");
+	cv::namedWindow("LEFT", cv::WINDOW_NORMAL);
+	cv::namedWindow("RIGHT", cv::WINDOW_NORMAL);
 
 	// whether do tracking
 	bool tracking_state = true;
@@ -27,9 +27,9 @@ int main()
     bool found_chessboard_left = false;
     char mode;
 	InitParameters init_params;
-	init_params.camera_resolution = RESOLUTION_HD2K;
-	init_params.camera_fps = 15;
-    //init_params.svo_input_filename.set("/home/zack/Videos/big_board.svo");
+	init_params.camera_resolution = RESOLUTION_HD720;
+	init_params.camera_fps = 60;
+    // init_params.svo_input_filename.set("/home/zack/Videos/circle.svo");
 
 	ERROR_CODE err = zed.open(init_params);
 	if (err != SUCCESS) 
@@ -60,6 +60,8 @@ int main()
 	switch (mode)
     {
         case 'p':
+            cv::setMouseCallback("RIGHT", DataProcess::onMouseRight);
+            cv::setMouseCallback("LEFT", DataProcess::onMouseLeft);
             while (finding_transfer_matrix)
             {
                 if (zed.grab() == SUCCESS)
@@ -76,28 +78,36 @@ int main()
                     dataProcess.image_l.convertTo(dataProcess.image_l, CV_8U);
                     assert(dataProcess.image_r.channels() == 3&& dataProcess.image_l.channels()==3);
                     //find corner coordinates in both left and right view
-
-                    for(int num_picture=0; num_picture<2;num_picture++)
+                    if(DataProcess::get_chessboard_roi_left&&DataProcess::get_chessboard_roi_right)
                     {
-                        if(num_picture==0)
+                        for(int num_picture=0; num_picture<2;num_picture++)
                         {
-                            if(dataProcess.find_camera_coordinates(dataProcess.image_l, boardSize)) {
-                                printf("Found left view corners successfully!\n");
-                                dataProcess.corners_l = dataProcess.imagecorners;
-                                found_chessboard_left = true;
+                            if(num_picture==0)
+                            {
+                                if(dataProcess.find_camera_coordinates(num_picture, dataProcess.image_l, boardSize)) {
+                                    printf("Found left view corners successfully!\n");
+                                    dataProcess.corners_l = dataProcess.imagecorners;
+                                    found_chessboard_left = true;
+                                }
+                            }
+                            // ensure the left and right chessboard were found at the same time;
+                            if(num_picture==1 && found_chessboard_left)
+                            {
+                                if(dataProcess.find_camera_coordinates(num_picture, dataProcess.image_r, boardSize)) {
+                                    printf("Found right view corners successfully!\n");
+                                    dataProcess.corners_r = dataProcess.imagecorners;
+                                    finding_transfer_matrix = false;
+                                }
                             }
                         }
-                        // ensure the left and right chessboard were found at the same time;
-                        if(num_picture==1 && found_chessboard_left)
-                        {
-                            if(dataProcess.find_camera_coordinates(dataProcess.image_r, boardSize)) {
-                                printf("Found right view corners successfully!\n");
-                                dataProcess.corners_r = dataProcess.imagecorners;
-                                finding_transfer_matrix = false;
-                            }
-                        }
+                        found_chessboard_left = false;
                     }
-                    found_chessboard_left = false;
+                    while(!(DataProcess::get_chessboard_roi_left&&DataProcess::get_chessboard_roi_right))
+                    {
+                        cv::imshow("LEFT", dataProcess.image_l);
+                        cv::imshow("RIGHT", dataProcess.image_r);
+                        cv::waitKey(1);
+                    }
                     cv::imshow("LEFT", dataProcess.image_l);
                     cv::imshow("RIGHT", dataProcess.image_r);
                     cv::waitKey(1);
@@ -182,8 +192,18 @@ int main()
                         }
                         dataProcess.process();
                     }
+                    while(!(KeypointTrack::get_rois_r&&KeypointTrack::get_rois_l))
+                    {
+                        // show static image while rois are not selected
+                        cv::imshow("RIGHT", kpt.image_r);
+                        cv::imshow("LEFT", kpt.image_l);
+                        char key = cv::waitKey(1);
+                        if (key == 'q')
+                        {
+                            tracking_state = false;
+                        }
+                    }
                     cv::imshow("RIGHT", kpt.image_r);
-
                     cv::imshow("LEFT", kpt.image_l);
                     char key = cv::waitKey(1);
                     if (key == 'q')
